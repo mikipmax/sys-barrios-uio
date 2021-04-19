@@ -1,0 +1,597 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template-estudiante.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedEvento.listaEvento}"
+				var="evento" responsive="true" scroll-horizontally="true"
+				striped="false" >
+				<b:dataTableColumn value="#{evento.nombreEvento}"
+					label="Nombre Evento" />
+				<b:dataTableColumn
+					value="#{managedEvento.formatoFecha(evento.fechaInicio)}"
+					label="Fecha de Inicio" />
+				<b:dataTableColumn label="Total de horas" value="#{evento.duracion}">
+
+
+
+				</b:dataTableColumn>
+
+				<b:dataTableColumn
+					value="#{managedEvento.buscarProyecto(evento.idProyecto)}"
+					label="Proyecto" />
+				<b:dataTableColumn
+					value="#{managedEvento.buscarBarrio(evento.idBarrio)}"
+					label="Barrio" />
+				<b:dataTableColumn
+					value="##{managedEvento.buscarCarrera(evento.idCarr)}"
+					label="Carrera" />
+
+				<b:dataTableColumn label="Review">
+					<p:commandLink actionListener="#{managedEvento.leerFila(evento)}"
+						oncomplete="PF('dialogoReview').show();" update="idDialogoReview">
+						<i class="pi pi-comments" />
+					</p:commandLink>
+				</b:dataTableColumn>
+
+				<b:dataTableColumn label="Docentes">
+					<p:commandLink actionListener="#{managedEvento.leerFila(evento)}"
+						oncomplete="PF('dialogoDocEvent').show();"
+						update="idDialogoDocEvent">
+						<i class="pi pi-users" />
+					</p:commandLink>
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Estudiantes">
+					<p:commandLink actionListener="#{managedEvento.leerFila(evento)}"
+						oncomplete="PF('dialogoEstudiantesVinculacion').show();"
+						update="idDialogoEstudiantesVinculacion">
+						<i class="pi pi-users" />
+					</p:commandLink>
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Actividades">
+					<p:commandLink actionListener="#{managedEvento.leerFila(evento)}"
+						oncomplete="PF('dialogoActEvento').show();"
+						update="idDialogoActEvento">
+						<i class="pi pi-info" />
+					</p:commandLink>
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Opciones">
+					<p:commandLink actionListener="#{managedEvento.leerFila(evento)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil">
+						<i class="pi pi-pencil"></i>
+					</p:commandLink>
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Gestión Foto">
+					<p:commandLink update="idDialogoAgregarFoto"
+						actionListener="#{managedFoto.leerFila(evento)}"
+						oncomplete="PF('dialogoAgregarFoto').show();">
+						<i class="pi pi-camera" />
+					</p:commandLink>
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Ver Fotos">
+
+					<p:commandLink
+						actionListener="#{managedFoto.previoListarPorEvento(evento)}"
+						oncomplete="PF('dialogGalery').show();" update="idDialogGalery">
+						<i class="pi pi-eye" />
+
+					</p:commandLink>
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+		<div align="center">
+			<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+			<p:commandButton value="Agregar nuevo Evento"
+				actionListener="#{managedEvento.limpiarCheck}"
+				update="iDialogoCrear" oncomplete="PF('dialogoCrear').show();" />
+		</div>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar evento" responsive="true" resizable="false"
+			closeOnEscape="true" appendTo="@(body)" modal="true" height="585"
+			draggable="false" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar">
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtNombre" value="Nombre evento" />
+						</p:column>
+						<p:column>
+							<p:inputText id="txtNombre" maxlength="50" required="true"
+								value="#{managedEvento.eventoSelect.nombreEvento}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtFechaInicio" value="Fecha de inicio" />
+						</p:column>
+						<p:column>
+							<p:calendar id="txtFechaInicio" navigator="true"
+								pattern="dd-MM-yyyy" required="true"
+								value="#{managedEvento.eventoSelect.fechaInicio}" />
+
+
+
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel for="timeonly" value="Total de horas" />
+						</p:column>
+						<p:column>
+
+							<p:inputText id="timeonly" maxlength="5" required="true"
+								value="#{managedEvento.eventoSelect.duracion}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputLabel for="proyecto" value="Seleccion Proyecto" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="proyecto"
+								value="#{managedEvento.proyecto.idProyecto}">
+								<f:selectItems value="#{managedEvento.listaProyecto}"
+									var="proyecto" itemLabel="#{proyecto.nombreProyecto}"
+									itemValue="#{proyecto.idProyecto}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="barrio" value="Seleccion barrio" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="barrio"
+								value="#{managedEvento.barrio.idBarrio}">
+								<f:selectItems value="#{managedEvento.listaBarrio}" var="barrio"
+									itemLabel="#{barrio.nombreBarrio}"
+									itemValue="#{barrio.idBarrio}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputLabel for="carrera" value="Seleccion carrera" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="carrera"
+								value="#{managedEvento.carrera.idCarr}">
+								<f:selectItems value="#{managedEvento.listaCarrera}"
+									var="carrera" itemLabel="#{carrera.nombreCarr}"
+									itemValue="#{carrera.idCarr}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="review" value="Review" />
+						</p:column>
+						<p:column>
+							<p:inputTextarea id="review" autoResize="false"
+								value="#{managedEvento.eventoSelect.review}" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtEstado" value="Estado evento" />
+						</p:column>
+						<p:column>
+						
+									<p:selectOneMenu id="txtEstado"
+								value="#{managedEvento.eventoSelect.estadoEvento}">
+
+								<f:selectItems value="#{managedEvento.listaEstado}" var="estado"
+									itemLabel="#{estado}" itemValue="#{estado}" />
+
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<b:dataTable value="#{managedEvento.listaActEventoAux}"
+								caption="Elija las actividades" striped="false"
+								responsive="true" scroll-horizontally="true" var="catalogoAct">
+
+								<b:dataTableColumn value="#{catalogoAct[0].nombreCatAct}" label="Actividades"/>
+
+								<b:dataTableColumn label="Selección">
+									<b:switch value="#{catalogoAct[1]}"
+										onchange="ajax:managedEvento.LeerFilaObjetoCatalogoAct(catalogoAct);" />
+
+
+								</b:dataTableColumn>
+							</b:dataTable>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<b:dataTable value="#{managedEvento.listaDocEventAux}"
+								caption="Elija los docentes" var="docente" responsive="true"
+								scroll-horizontally="true" striped="false">
+
+								<b:dataTableColumn value="#{docente[0].nombre}" />
+								<b:dataTableColumn value="#{docente[0].apellido}" />
+
+								<b:dataTableColumn label="Selección">
+									<b:switch value="#{docente[1]}"
+										onchange="ajax:managedEvento.LeerFilaObjetoDocente(docente);" />
+
+
+								</b:dataTableColumn>
+							</b:dataTable>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column colspan="2">
+							<b:dataTable
+								value="#{managedEvento.listaEstudianteVinculacionAux}"
+								caption="Elija los estudiantes" var="estudiante"
+								responsive="true" scroll-horizontally="true" striped="false">
+
+								<b:dataTableColumn value="#{estudiante[0].nombre}" />
+								<b:dataTableColumn value="#{estudiante[0].apellido}" />
+								<b:dataTableColumn value="#{estudiante[0].semestre}" />
+
+								<b:dataTableColumn label="Selección">
+									<p:selectBooleanCheckbox value="#{estudiante[1]}">
+										<p:ajax
+											listener="#{managedEvento.LeerFilaObjecto(estudiante)}" />
+									</p:selectBooleanCheckbox>
+
+								</b:dataTableColumn>
+							</b:dataTable>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:commandButton value="Guardar cambios"
+								actionListener="#{managedEvento.actualizar}"
+								update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+								oncomplete="PF('dialogoEditar').hide();" />
+										<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear evento" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true" height="585">
+
+			<h:form>
+
+
+				<p:panelGrid id="pgCrear">
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtNombre" value="Nombre evento" />
+
+						</p:column>
+						<p:column>
+							<p:inputText id="txtNombre" maxlength="50" required="true"
+								value="#{managedEvento.evento.nombreEvento}" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtFechaInicio" value="Fecha de inicio" />
+						</p:column>
+						<p:column>
+							<p:calendar id="txtFechaInicio" navigator="true"
+								pattern="dd-MM-yyyy" required="true"
+								value="#{managedEvento.evento.fechaInicio}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel for="timeonly" value="Total de horas:" />
+
+						</p:column>
+						<p:column>
+							<p:inputMask id="timeonly"
+								value="#{managedEvento.evento.duracion}" mask="99.99" />
+
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="proyecto" value="Seleccion Proyecto" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="proyecto"
+								value="#{managedEvento.proyecto.idProyecto}">
+								<f:selectItems value="#{managedEvento.listaProyecto}"
+									var="proyecto" itemLabel="#{proyecto.nombreProyecto}"
+									itemValue="#{proyecto.idProyecto}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+
+
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="barrio" value="Seleccion barrio" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="barrio"
+								value="#{managedEvento.barrio.idBarrio}">
+								<f:selectItems value="#{managedEvento.listaBarrio}" var="barrio"
+									itemLabel="#{barrio.nombreBarrio}"
+									itemValue="#{barrio.idBarrio}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="carrera" value="Seleccion carrera" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="carrera"
+								value="#{managedEvento.carrera.idCarr}">
+								<f:selectItems value="#{managedEvento.listaCarrera}"
+									var="carrera" itemLabel="#{carrera.nombreCarr}"
+									itemValue="#{carrera.idCarr}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+
+
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="review" value="Review" />
+						</p:column>
+						<p:column>
+							<p:inputTextarea id="review"
+								value="#{managedEvento.evento.review}" autoResize="false" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<b:dataTable value="#{managedEvento.listaCatalogoAct}"
+								caption="Elija las actividades" var="catalogoAct"
+								responsive="true" scroll-horizontally="true" striped="false">
+
+								<b:dataTableColumn value="#{catalogoAct.nombreCatAct}" label="Actividades" />
+
+								<b:dataTableColumn label="Selección">
+
+									<p:selectBooleanCheckbox
+										value="#{managedEvento.checkActEvento}">
+										<p:ajax listener="#{managedEvento.leerFila(catalogoAct)}" />
+									</p:selectBooleanCheckbox>
+
+								</b:dataTableColumn>
+							</b:dataTable>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column colspan="2">
+							<b:dataTable value="#{managedEvento.listaDocente}" var="docente"
+								responsive="true" scroll-horizontally="true" striped="false"
+								caption="Elija los docentes">
+
+								<b:dataTableColumn value="#{docente.nombre}" />
+								<b:dataTableColumn value="#{docente.apellido}" />
+
+								<b:dataTableColumn label="Selección">
+
+									<p:selectBooleanCheckbox value="#{managedEvento.checkDocEvent}">
+										<p:ajax listener="#{managedEvento.leerFila(docente)}" />
+									</p:selectBooleanCheckbox>
+
+								</b:dataTableColumn>
+							</b:dataTable>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column colspan="2">
+							<b:dataTable value="#{managedEvento.listaEstudiante}"
+								var="estudiante" responsive="true" scroll-horizontally="true"
+								striped="false" caption="Elija los estudiantes">
+
+								<b:dataTableColumn value="#{estudiante.nombre}" />
+								<b:dataTableColumn value="#{estudiante.apellido}" />
+								<b:dataTableColumn value="#{estudiante.semestre}" />
+
+								<b:dataTableColumn label="Selección">
+									<p:selectBooleanCheckbox value="#{managedEvento.check}">
+										<p:ajax listener="#{managedEvento.leerFila(estudiante)}" />
+									</p:selectBooleanCheckbox>
+
+								</b:dataTableColumn>
+							</b:dataTable>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column colspan="2">
+							<p:commandButton value="Guardar"
+								actionListener="#{managedEvento.crear}"
+								update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+								oncomplete="PF('dialogoCrear').hide();" />
+										<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+						</p:column>
+
+					</p:row>
+				</p:panelGrid>
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+		<!-- ************************************DIAGOLO REVIEW******************************************* -->
+		<p:dialog id="idDialogoReview" widgetVar="dialogoReview"
+			header="Review" responsive="true" draggable="false" resizable="false"
+			closeOnEscape="true" position="top" appendTo="@(body)"
+			modal="true">
+			<h:form>
+
+				<p:panelGrid columns="1">
+					<p:inputTextarea value="#{managedEvento.eventoSelect.review}"
+						disabled="true" />
+
+					<p:commandButton value="Cerrar"
+						onclick="PF('dialogoReview').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+
+		<!-- ************************************DIAGOLO EstudiantesVinculacion******************************************* -->
+		<p:dialog id="idDialogoEstudiantesVinculacion"
+			widgetVar="dialogoEstudiantesVinculacion"
+			header="Vinculacion-Estudiantes" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true">
+			<h:form>
+				<b:dataTable value="#{managedEvento.listaEstudianteAux}"
+					var="estudiante" responsive="true" scroll-horizontally="true"
+					striped="false">
+
+					<b:dataTableColumn label="Estudiante" value="#{estudiante.nombre}" />
+					<b:dataTableColumn label="Estudiante" value="#{estudiante.apellido}" />
+					<b:dataTableColumn label="Semestre" value="#{estudiante.semestre}" />
+
+
+				</b:dataTable>
+				<p:commandButton value="Cerrar"
+					onclick="PF('dialogoEstudiantesVinculacion').hide();" />
+			</h:form>
+		</p:dialog>
+
+
+		<!-- ************************************DIAGOLO DocEvent******************************************* -->
+		<p:dialog id="idDialogoDocEvent" widgetVar="dialogoDocEvent"
+			header="Docentes" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true">
+			<h:form>
+				<b:dataTable value="#{managedEvento.listaDocenteAux}" var="docente"
+					responsive="true" scroll-horizontally="true" striped="false">
+
+					<b:dataTableColumn value="#{docente.nombre}" />
+					<b:dataTableColumn value="#{docente.apellido}" />
+
+
+				</b:dataTable>
+				<p:commandButton value="Cerrar"
+					onclick="PF('dialogoDocEvent').hide();" />
+			</h:form>
+		</p:dialog>
+
+
+
+		<!-- ************************************DIAGOLO ActEvento******************************************* -->
+		<p:dialog id="idDialogoActEvento" widgetVar="dialogoActEvento"
+			header="Actividades" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true">
+			<h:form>
+				<b:dataTable value="#{managedEvento.listaCatalogoActAux}"
+					var="catalogoAct" responsive="true" scroll-horizontally="true"
+					striped="false">
+
+					<b:dataTableColumn value="#{catalogoAct.nombreCatAct}" label="Actividades"/>
+
+
+				</b:dataTable>
+				<p:commandButton value="Cerrar"
+					onclick="PF('dialogoActEvento').hide();" />
+			</h:form>
+		</p:dialog>
+
+
+
+		<!-- ************************************DIAGOLO AGREGAR FOTO******************************************* -->
+		<p:dialog id="idDialogoAgregarFoto" widgetVar="dialogoAgregarFoto"
+			header="Agregar Foto" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true">
+			<h:form enctype="multipart/form-data">
+				<!-- Para soportar varias fotos basta con agregar en el fileUPload multiple=true y es obligarorio un sequential=true para que se suba una a la vez y no de error -->
+				<p:fileUpload label="Seleccione Imagen" id="txtFoto"
+					listener="#{managedFoto.handleFileUpload}" accept="image/*"
+					allowTypes="/(\.|\/)(gif|jpe?g|png)$/" dragDropSupport="true"
+					mode="advanced" update=":formListar:growlEliminar txtFoto"
+					multiple="false" fileLimit="1"
+					fileLimitMessage="Solo una foto por evento"
+					oncomplete="PF('dialogoAgregarFoto').hide();">
+					<h:outputLabel value="Arrastre su foto aquí" />
+					<hr />
+				</p:fileUpload>
+				<p:commandButton value="Cerrar"
+					onclick="PF('dialogoAgregarFoto').hide();" />
+			</h:form>
+		</p:dialog>
+		<!-- ************************************DIAGOLO GALERIA******************************************* -->
+		<!--onShow="PF('dialogGalery').toggleMaximize();" me permite maximizar el dialog apenas se abra  -->
+		<p:dialog id="idDialogGalery" widgetVar="dialogGalery"
+			header="Galería" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true" hideEffect="clip"
+			onShow="PF('dialogGalery').toggleMaximize();">
+
+
+			<div align="center">
+
+
+				<p:graphicImage value="#{managedFoto.foto}" cache="false" />
+			</div>
+
+
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

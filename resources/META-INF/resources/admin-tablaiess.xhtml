@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">TABLAIESS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{tablaiessB.listaTablaiess}" var="tablaiess"
+							responsive="true" striped="false" copy="true">
+							<b:dataTableColumn value="#{tablaiess.codigo}" />
+							<b:dataTableColumn value="#{tablaiess.sobrevidah}" />
+							<b:dataTableColumn value="#{tablaiess.sobrevidam}" />
+							<b:dataTableColumn value="#{tablaiess.vidaespem}" />
+							<b:dataTableColumn value="#{tablaiess.vidaespeh}" />
+							<b:dataTableColumn value="#{tablaiess.sobcesah}" />
+							<b:dataTableColumn value="#{tablaiess.retiroh}" />
+							<b:dataTableColumn value="#{tablaiess.cesanh}" />
+							<b:dataTableColumn value="#{tablaiess.pactivoh}" />
+							<b:dataTableColumn value="#{tablaiess.invah}" />
+							<b:dataTableColumn value="#{tablaiess.qinvah}" />
+							<b:dataTableColumn value="#{tablaiess.omegah}" />
+							<b:dataTableColumn value="#{tablaiess.qomegah}" />
+							<b:dataTableColumn value="#{tablaiess.qinvomeh}" />
+							<b:dataTableColumn value="#{tablaiess.sobcesam}" />
+							<b:dataTableColumn value="#{tablaiess.retirom}" />
+							<b:dataTableColumn value="#{tablaiess.cesanm}" />
+							<b:dataTableColumn value="#{tablaiess.pactivom}" />
+							<b:dataTableColumn value="#{tablaiess.invam}" />
+							<b:dataTableColumn value="#{tablaiess.qinvam}" />
+							<b:dataTableColumn value="#{tablaiess.omegam}" />
+							<b:dataTableColumn value="#{tablaiess.qomegam}" />
+							<b:dataTableColumn value="#{tablaiess.qinvomem}" />
+							
+							
+
+						</b:dataTable>
+
+					</div>
+				</div>
+			</div>
+
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,117 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+
+	<h:outputStylesheet name="css/style-uio.css" />
+
+	<style type="text/css">
+.ui-stack {
+	z-index: 1000;
+}
+
+
+</style>
+
+</h:head>
+
+<h:body>
+
+	<p:graphicImage name="css/banner.jpg" id="image" width="100%"
+		height="15%" />
+
+
+
+
+
+
+
+	<p:menubar>
+
+
+
+		<p:submenu label="Eventos">
+			<p:menuitem value="Ver Eventos" outcome="publico-evento.xhtml" />
+
+		</p:submenu>
+
+		<p:submenu label="Estudiantes">
+			<p:menuitem value="Ver Estudiantes"
+				outcome="publico-estudiante.xhtml" />
+
+		</p:submenu>
+		<p:submenu label="Dirigentes">
+			<p:menuitem value="Ver Dirigentes" outcome="publico-dirigente.xhtml" />
+
+		</p:submenu>
+		<p:submenu label="Barrios">
+			<p:menuitem value="Ver Barrios" outcome="publico-barrio.xhtml" />
+
+		</p:submenu>
+
+		<p:submenu label="Docentes">
+			<p:menuitem value="Ver Docentes" outcome="publico-docente.xhtml" />
+
+		</p:submenu>
+
+
+		<p:submenu label="Actividades">
+			<p:menuitem value="Ver Actividades"
+				outcome="publico-catalogo-act.xhtml" />
+
+		</p:submenu>
+		<p:submenu label="Programa">
+			<p:menuitem value="Ver Programa" outcome="publico-programa.xhtml" />
+
+		</p:submenu>
+		<p:submenu label="Proyectos">
+			<p:menuitem value="Ver Proyectos" outcome="publico-proyecto.xhtml" />
+
+		</p:submenu>
+		<p:submenu label="Revistas">
+			<p:menuitem value="Ver Revistas" outcome="publico-revista.xhtml" />
+
+		</p:submenu>
+
+		<p:submenu label="Diagnósticos">
+			<p:menuitem value="Ver Diagnósticos"
+				outcome="publico-diagnostico.xhtml" />
+
+		</p:submenu>
+		<p:menuitem outcome="login.xhtml">
+			<i class="pi pi-users"></i>
+		</p:menuitem>
+
+	</p:menubar>
+
+	<br />
+
+
+	<ui:insert name="contenido">
+		<p:outputLabel value="Bienvenidos" />
+	</ui:insert>
+
+
+
+
+
+
+
+
+</h:body>
+<script>
+	function w3_open() {
+		document.getElementById("mySidebar").style.display = "block";
+	}
+
+	function w3_close() {
+		document.getElementById("mySidebar").style.display = "none";
+	}
+</script>
+</html>

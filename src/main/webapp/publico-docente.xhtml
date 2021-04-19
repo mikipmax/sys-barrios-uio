@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template-publico.xhtml">
+	<ui:define name="contenido">
+
+
+
+		<b:container>
+			<!-- ************************************LISTAR******************************************* -->
+
+			<h:form id="formListar">
+
+				<p:growl id="growlEliminar" />
+				<b:dataTable id="table" value="#{managedDocente.listaDocente}"
+					var="docente" responsive="true" scroll-horizontally="true"
+					striped="false" >
+					<b:dataTableColumn value="#{docente.cedula}" label="Cédula" />
+					<b:dataTableColumn value="#{docente.nombre}" label="Nombre" />
+					<b:dataTableColumn value="#{docente.apellido}" label="Apellido" />
+			
+					<b:dataTableColumn value="#{docente.correo}" label="Correo" />
+					<b:dataTableColumn value="#{docente.genero}" label="Género" />
+
+					<b:dataTableColumn value="#{managedDocente.buscar(docente.idCarr)}"
+						label="Carrera" />
+
+
+				</b:dataTable>
+			</h:form>
+
+		</b:container>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+		<!-- REVISAR ESTAS PROPIEDADES -->
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedRevista.listaRevista}"
+				var="revista" responsive="true" scroll-horizontally="true" striped="false">
+				<b:dataTableColumn value="#{revista.nombreRevista}"
+					label="Nombre revista" />
+				<b:dataTableColumn>
+					<h:outputLink value="#{revista.urlRevista}" target="_blank" rendered="#{!empty(revista.urlRevista)}">Revista</h:outputLink>
+
+
+
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Opciones">
+					<p:commandButton value="Editar"
+						actionListener="#{managedRevista.leerFila(revista)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil" />
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+<div align="center">
+		<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+		<p:commandButton value="Agregar nueva revista"
+			onclick="PF('dialogoCrear').show();"  />
+</div>
+
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar revista" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top"  >
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre revista" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedRevista.revistaSelect.nombreRevista}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtRevista" value="Revista" />
+					<p:inputText id="txtRevista" required="true"
+						value="#{managedRevista.revistaSelect.urlRevista}" onclick="this.setSelectionRange(0, this.value.length)"/>
+
+
+
+
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedRevista.actualizar}"
+						update=":formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear revista" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top"  >
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre Revista" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedRevista.revista.nombreRevista}" />
+		
+					<p:outputLabel for="txtRevista" value="Revista" />
+					<p:inputText id="txtRevista" required="true"
+						value="#{managedRevista.revista.urlRevista}" />
+				
+			
+		
+			
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedRevista.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

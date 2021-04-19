@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template-publico.xhtml">
+	<ui:define name="contenido">
+
+
+<b:container>
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedPrograma.listaPrograma}"
+				var="programa" responsive="true" scroll-horizontally="true"
+				striped="false" >
+				<b:dataTableColumn value="#{programa.nombrePrograma}"
+					label="Nombre programa" />
+				<b:dataTableColumn value="#{programa.mision}" label="Misión" />
+				<b:dataTableColumn value="#{programa.vision}" label="Visión" />
+				<b:dataTableColumn value="#{programa.objetivo}" label="Objetivo" />
+				<b:dataTableColumn value="#{programa.antecedentes}"
+					label="Antecedentes" />
+				<b:dataTableColumn label="Docentes">
+					<p:commandLink
+						actionListener="#{managedPrograma.leerFila(programa)}"
+						oncomplete="PF('dialogoDocPrograma').show();"
+						update="idDialogoDocPrograma">
+						<i class="pi pi-users" />
+					</p:commandLink>
+				</b:dataTableColumn>
+
+			</b:dataTable>
+		</h:form>
+
+
+
+		<!-- ************************************DIAGOLO DocPrograma******************************************* -->
+		<p:dialog id="idDialogoDocPrograma" widgetVar="dialogoDocPrograma"
+			header="Docentes" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top">
+			<h:form>
+				<b:dataTable value="#{managedPrograma.listaDocenteAux}"
+					var="docente" responsive="true" scroll-horizontally="true"
+					striped="false">
+
+					<b:dataTableColumn value="#{docente.nombre}" />
+		<b:dataTableColumn value="#{docente.apellido}" />
+
+				</b:dataTable>
+				<p:commandButton value="Cerrar"
+					onclick="PF('dialogoDocPrograma').hide();" />
+			</h:form>
+		</p:dialog>
+		</b:container>
+	</ui:define>
+
+</ui:composition>

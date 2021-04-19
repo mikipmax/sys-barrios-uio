@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+		
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+		<!-- REVISAR ESTAS PROPIEDADES -->
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedBarrio.listaBarrio}"
+				var="barrio" responsive="true" scroll-horizontally="true" striped="false"  >
+				<b:dataTableColumn value="#{barrio.nombreBarrio}"
+					label="Nombre barrio" />
+				<b:dataTableColumn label="Diagnósticos">
+					<h:outputLink value="#{barrio.diagnostico}" target="_blank" rendered="#{!empty(barrio.diagnostico)}" >Diagnóstico</h:outputLink>
+					
+					
+
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Opciones">
+					<p:commandButton value="Editar/Agregar"
+						actionListener="#{managedBarrio.leerFila(barrio)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil" />
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+
+
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar diagnóstico" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre barrio" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedBarrio.barrioSelect.nombreBarrio}" disabled="true" />
+					<p:outputLabel for="txtDiagnostico" value="Diagnóstico" />
+					<p:inputText id="txtDiagnostico" required="true"
+						value="#{managedBarrio.barrioSelect.diagnostico}" onclick="this.setSelectionRange(0, this.value.length)"/>
+
+
+
+
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedBarrio.actualizar}"
+						update=":formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template-publico.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+		<b:container>
+
+
+
+			<!-- ************************************LISTAR******************************************* -->
+
+			<h:form id="formListar">
+				<p:growl id="growlEliminar" />
+				<b:dataTable id="table" value="#{managedBarrio.listaBarrio}"
+					var="barrio" responsive="true" scroll-horizontally="true"
+					striped="false" >
+					<b:dataTableColumn value="#{barrio.nombreBarrio}"
+						label="Nombre barrio" />
+					<b:dataTableColumn label="Diagnósticos">
+						<h:outputLink value="#{barrio.diagnostico}" target="_blank"
+							rendered="#{!empty(barrio.diagnostico)}">Diagnóstico</h:outputLink>
+
+
+
+					</b:dataTableColumn>
+
+				</b:dataTable>
+			</h:form>
+
+		</b:container>
+
+
+
+	</ui:define>
+
+</ui:composition>

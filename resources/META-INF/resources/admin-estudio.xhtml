@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">ESTUDIO</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{estudioB.listaEstudio}"
+							var="estudio" responsive="true" striped="false" copy="true">
+							<b:dataTableColumn value="#{estudio.estuAnio}"
+								label="Año de estudio" />
+							<b:dataTableColumn value="#{estudio.emprId.emprRazon}"
+								label="Empresa" />
+
+
+							<b:dataTableColumn label="Opciones">
+								<b:commandButton value="Editar"
+									actionListener="#{estudioB.leerFila(estudio)}"
+									oncomplete="PF('dialogoEditar').show();"
+									update="iDialogoEditar" icon="pencil"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+							</b:dataTableColumn>
+							<b:dataTableColumn label="Agregar Empleados">
+								<p:commandLink update="idDialogoAgregarExcel"
+									actionListener="#{estudioB.leerFila(estudio)}"
+									oncomplete="PF('dialogoAgregarExcel').show();">
+									<i class="pi pi-file-excel" style="font-size: 3em" />
+								</p:commandLink>
+							</b:dataTableColumn>
+
+						</b:dataTable>
+						<p:messages id="messages" closable="true">
+							<p:autoUpdate />
+						</p:messages>
+						<br />
+						<div align="center">
+							<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+							<p:commandButton value="Agregar nuevo estudio"
+								onclick="PF('dialogoCrear').show();"
+								styleClass="btn btn-outline-info btn-sm" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Registro" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel for="txtAnio" value="Año *" />
+					<b:inputText id="txtAnio" required="true" mask="integer"
+						value="#{estudioB.estudioSelect.estuAnio}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="empresa" value="Seleccione Empresa" />
+					<p:selectOneMenu id="empresa" value="#{estudioB.empresa.emprId}"
+						required="true">
+
+						<f:selectItems value="#{estudioB.listaEmpresa}" var="empresa"
+							itemLabel="#{empresa.emprRazon}" itemValue="#{empresa.emprId}" />
+
+					</p:selectOneMenu>
+
+					<h:outputLabel for="txtPorcentaje"
+						value="Porcentaje de crecimiento de Sueldos" />
+					<b:inputText id="txtPorcentaje" mask="decimal"
+						value="#{estudioB.estudioSelect.estuPorcCrecSueldos}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{estudioB.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Registrar" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<h:outputLabel for="txtAnio" value="Año *" />
+					<b:inputText id="txtAnio" required="true" mask="integer"
+						value="#{estudioB.estudio.estuAnio}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="empresa" value="Seleccione Empresa" />
+					<p:selectOneMenu id="empresa" value="#{estudioB.empresa.emprId}"
+						required="true">
+						<f:selectItem itemLabel="(Seleccione una empresa)"
+							noSelectionOption="true" />
+						<f:selectItems value="#{estudioB.listaEmpresa}" var="empresa"
+							itemLabel="#{empresa.emprRazon}" itemValue="#{empresa.emprId}" />
+
+					</p:selectOneMenu>
+					<h:outputLabel for="txtPorcentaje"
+						value="Porcentaje de crecimiento de Sueldos" />
+					<b:inputText id="txtPorcentaje" mask="decimal"
+						value="#{estudioB.estudio.estuPorcCrecSueldos}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+
+					<p:commandButton value="Guardar" actionListener="#{estudioB.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO AGREGAR EXCEL******************************************* -->
+		<p:dialog id="idDialogoAgregarExcel" widgetVar="dialogoAgregarExcel"
+			header="Agregar Excel" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" position="top"
+			appendTo="@(body)" modal="true">
+
+			<h:form enctype="multipart/form-data">
+				<p:panelGrid columns="2">
+					<h:outputLabel for="empresa" value="Empresa" />
+					<b:inputText id="empresa" disabled="true"
+						value="#{estudioB.estudioSelect.emprId.emprRazon}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtAnio" value="Año" />
+					<b:inputText id="txtAnio" disabled="true"
+						value="#{estudioB.estudioSelect.estuAnio}"
+						onclick="this.setSelectionRange(0, this.value.length)"
+						mask="integer" />
+				</p:panelGrid>
+				<p:fileUpload label="Seleccione archivo" id="fExcel"
+					listener="#{estudioB.handleFileUpload}" accept=".xlsx"
+					dragDropSupport="true" mode="advanced"
+					update=":formListar:growlEliminar idDialogoAgregarExcel  :formListar:table"
+					multiple="false" fileLimit="1"
+					fileLimitMessage="Solo un archivo a la vez"
+					oncomplete="PF('dialogoAgregarExcel').hide();">
+					<h:outputLabel value="Arrastre su archivo aquí" />
+					<hr />
+				</p:fileUpload>
+				<br />
+				<p:commandButton value="Cerrar"
+					onclick="PF('dialogoAgregarExcel').hide();" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

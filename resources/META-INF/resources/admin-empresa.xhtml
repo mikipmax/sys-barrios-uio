@@ -1,0 +1,168 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">EMPRESAS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{empresaB.listaEmpresa}"
+							var="empresa" responsive="true" striped="false" copy="true"
+							widgetVar="wgEmpresa" > 
+							<b:dataTableColumn value="#{empresa.emprRuc}" label="Ruc" />
+							<b:dataTableColumn value="#{empresa.emprRazon}" label="Razón" />
+							<b:dataTableColumn value="#{empresa.ciudId.ciudNombre}"
+								label="Ciudad" />
+							<b:dataTableColumn value="#{empresa.emprDireccion}"
+								label="Direccion" />
+							<b:dataTableColumn value="#{empresa.emprReferencia}"
+								label="Referencia" />
+							<b:dataTableColumn value="#{empresa.emprTelefono}"
+								label="Teléfono" />
+							<b:dataTableColumn value="#{empresa.emprNormas}" label="Normas" />
+							<b:dataTableColumn label="Opciones">
+								<b:commandButton value="Editar"
+									actionListener="#{empresaB.leerFila(empresa)}"
+									oncomplete="PF('dialogoEditar').show();"
+									update="iDialogoEditar" icon="pencil"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+							</b:dataTableColumn>
+
+						</b:dataTable>
+						<div align="center">
+							<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+							<p:commandButton value="Agregar nueva empresa"
+								onclick="PF('dialogoCrear').show();"
+								styleClass="btn btn-outline-info btn-sm" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Registro" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel for="txtRuc" value="Ruc *" />
+					<b:inputText id="txtRuc"  required="true"
+						value="#{empresaB.empresaSelect.emprRuc}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtRazon" value="Razón *" />
+					<b:inputText id="txtRazon"  required="true"
+						value="#{empresaB.empresaSelect.emprRazon}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="ciudad" value="Seleccione Ciudad" />
+					<p:selectOneMenu id="ciudad" value="#{empresaB.ciudad.ciudId}"
+						required="true">
+
+						<f:selectItems value="#{empresaB.listaCiudad}" var="ciudad"
+							itemLabel="#{ciudad.ciudNombre}" itemValue="#{ciudad.ciudId}" />
+
+					</p:selectOneMenu>
+					<h:outputLabel for="txtDireccion" value="Dirreción" />
+					<b:inputText id="txtDireccion" 
+						value="#{empresaB.empresaSelect.emprDireccion}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtReferencia" value="Referencia" />
+					<b:inputText id="txtReferencia" 
+						value="#{empresaB.empresaSelect.emprReferencia}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtTelefono" value="Teléfono" />
+					<b:inputText id="txtTelefono" 
+						value="#{empresaB.empresaSelect.emprTelefono}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+
+
+					<h:outputLabel for="normas" value="Normas" />
+					<p:selectOneMenu id="normas"
+						value="#{empresaB.empresaSelect.emprNormas}">
+						<f:selectItems value="#{empresaB.normas}" var="norma"
+							itemLabel="#{norma}" itemValue="#{norma}" />
+					</p:selectOneMenu>
+
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{empresaB.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Registrar" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<h:outputLabel for="txtRuc" value="Ruc *" />
+					<b:inputText id="txtRuc"  required="true"
+						value="#{empresaB.empresa.emprRuc}" />
+					<h:outputLabel for="txtRazon" value="Razón *" />
+					<b:inputText id="txtRazon"  required="true"
+						value="#{empresaB.empresa.emprRazon}" />
+
+					<h:outputLabel for="ciudad" value="Seleccione Ciudad" />
+					<p:selectOneMenu id="ciudad" value="#{empresaB.ciudad.ciudId}"
+						required="true">
+
+						<f:selectItems value="#{empresaB.listaCiudad}" var="ciudad"
+							itemLabel="#{ciudad.ciudNombre}" itemValue="#{ciudad.ciudId}">
+
+						</f:selectItems>
+
+					</p:selectOneMenu>
+					<h:outputLabel for="txtDireccion" value="Dirección" />
+					<b:inputText id="txtDireccion" 
+						value="#{empresaB.empresa.emprDireccion}" />
+					<h:outputLabel for="txtReferencia" value="Referencia" />
+					<b:inputText id="txtReferencia" 
+						value="#{empresaB.empresa.emprReferencia}" />
+					<h:outputLabel for="txtTelefono" value="Telefono" />
+					<b:inputText id="txtTelefono" 
+						value="#{empresaB.empresa.emprTelefono}" />
+
+					<h:outputLabel for="normas" value="Normas" />
+					<p:selectOneMenu id="normas" value="#{empresaB.empresa.emprNormas}"
+						required="true">
+						<f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+						<f:selectItems value="#{empresaB.normas}" var="norma"
+							itemLabel="#{norma}" itemValue="#{norma}" />
+					</p:selectOneMenu>
+					<p:commandButton value="Guardar" actionListener="#{empresaB.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

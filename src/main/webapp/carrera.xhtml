@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedCarrera.listaCarrera}"
+				var="carrera" responsive="true" scroll-horizontally="true" striped="false"  >
+				<b:dataTableColumn value="#{carrera.nombreCarr}"
+					label="Nombre Carrera" />
+
+				<b:dataTableColumn label="Opciones">
+
+					<p:commandButton value="Editar"
+						actionListener="#{managedCarrera.leerFila(carrera)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil" />
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+<div align="center">
+		<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+		<p:commandButton value="Agregar nueva carrera"
+			onclick="PF('dialogoCrear').show();" />
+</div>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Carrera" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre Carrera" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedCarrera.carreraSelect.nombreCarr}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<!-- 
+<p:outputLabel for="txtEstado" value="Estado Carrera" />
+					<p:inputText id="txtEstado" maxlength="30" required="true"
+						value="#{managedCarrera.carreraSelect.estadoCarr}" />
+ -->
+
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedCarrera.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear Carrera" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true"  appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre Carrera" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedCarrera.carrera.nombreCarr}" />
+
+
+
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedCarrera.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

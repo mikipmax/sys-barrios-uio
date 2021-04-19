@@ -1,0 +1,128 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+
+
+
+
+
+
+
+		<h:form id="formEstudio">
+			<p:growl id="growl" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">ESTUDIO ACTUARIAL</h3>
+
+				</div>
+				<div class="card-body">
+					<p:panelGrid id="pgCrear" columns="6">
+
+						<h:outputLabel for="estudio" value="Seleccione Estudio" />
+						<p:selectOneMenu id="estudio" value="#{hipaB.estudio.estuId}"
+							required="true">
+
+							<f:selectItems value="#{hipaB.listaEstudio}" var="estudio"
+								itemLabel="#{estudio.estuAnio} - #{estudio.emprId.emprRazon}"
+								itemValue="#{estudio.estuId}" />
+
+						</p:selectOneMenu>
+						<h:outputLabel for="tasaDescuentoActurial"
+							value="Tasa de descuento actuarial (%)" />
+						<b:inputText id="tasaDescuentoActurial" mask="decimal"
+							value="#{hipaB.hipa.paraTasaDesc}"
+							onclick="this.setSelectionRange(0, this.value.length)" />
+
+						<h:outputLabel for="tasaCrecimientoSuel"
+							value="Tasa de crecimiento de sueldos (%)" />
+						<b:inputText id="tasaCrecimientoSuel" mask="decimal"
+							value="#{hipaB.hipa.paraTasaCreciSuel}"
+							onclick="this.setSelectionRange(0, this.value.length)" />
+						<h:outputLabel for="tasaCrecimientoSbu"
+							value="Tasa de crecimiento del SBU (%)" />
+						<b:inputText id="tasaCrecimientoSbu" mask="decimal"
+							value="#{hipaB.hipa.paraTasaCreciSbu}"
+							onclick="this.setSelectionRange(0, this.value.length)" />
+						<h:outputLabel for="valorSbu" value="Valor del SBU" />
+						<b:inputText id="valorSbu" mask="decimal"
+							value="#{hipaB.hipa.paraSbu}"
+							onclick="this.setSelectionRange(0, this.value.length)" />
+
+						<h:outputLabel for="indiceSumDesh"
+							value="Índice del sumatorio deshaucio" />
+						<b:inputText id="indiceSumDesh" mask="decimal"
+							value="#{hipaB.hipa.paraIndSumDesh}"
+							onclick="this.setSelectionRange(0, this.value.length)" />
+
+						<p:commandButton value="Calcular"
+							actionListener="#{hipaB.calcular}"
+							update=" :formEstudio :formEstudio:growl :formEstudio:sd"
+							styleClass="btn btn-outline-info btn-sm" />
+					</p:panelGrid>
+
+					<br />
+					<b:dataTable value="#{hipaB.listaEmpleadoCalculos}" var="empCal" excel="true" 
+						id="sd">
+						<b:dataTableColumn value="#{empCal.persCedula}" />
+						<b:dataTableColumn value="#{empCal.persNombres}" />
+						<b:dataTableColumn value="#{empCal.sexo}" />
+						<b:dataTableColumn value="#{empCal.fechanac}" />
+
+						<b:dataTableColumn value="#{empCal.fechaing}" />
+						<b:dataTableColumn value="#{empCal.fechaingHist}" />
+						<b:dataTableColumn value="#{empCal.sueldomen}" />
+					</b:dataTable>
+					    <p:messages id="messages"  closable="true">
+        <p:autoUpdate />
+    </p:messages>
+					<br />
+					<p:commandButton value="Enviar Estudio"
+						actionListener="#{hipaB.guardarCalculos}"
+						update=" :formEstudio  :formEstudio:growl"
+						styleClass="btn btn-outline-info btn-sm" />
+				</div>
+			</div>
+		</h:form>
+
+		<!-- Con esto tratamos un datatable como un foreach personalizado, además nos permite manejar Tablesaw -->
+
+
+
+
+	</ui:define>
+
+</ui:composition>
+<!-- 	<p:dataTable id="sd" value="#{hipaB.filas}" var="i">
+
+						<p:columns value="#{hipaB.columnas}" var="j">
+							<f:facet name="header">
+								<h:outputText value="#{j}" />
+							</f:facet>
+							<h:outputText value="#{hipaB.datos.getString(i,j)}" />
+
+						</p:columns>
+
+					</p:dataTable> -->
+<!--  DE ESTA MANERA SALE CAMBIADA LAS FILAS POR COLUMNAS
+		<p:dataTable id="sd" value="#{hipaB.datos.columns()}" var="car">
+
+
+			<p:columns value="#{hipaB.datos}" var="tes" columnIndexVar="i">
+
+			
+
+					<h:outputText value="#{hipaB.datos.getString(i,car.name())}" />
+				
+			</p:columns>
+		</p:dataTable>
+ -->

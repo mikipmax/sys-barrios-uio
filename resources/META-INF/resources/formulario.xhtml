@@ -1,0 +1,420 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/contacto-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+
+		<!-- ************************************TABLA EMPLEADOS******************************************* -->
+		<h:form id="formListar">
+
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">EMPLEADOS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{empleadoB.listaEmpleadoFiltrada}"
+							var="empleado" responsive="true" striped="false" page-length="5"
+							page-length-menu="5,10,20" copy="true">
+							<b:dataTableColumn value="#{empleado.persCedula}" label="Cédula" />
+							<b:dataTableColumn value="#{empleado.persNombres}"
+								label="APELLIDOS Y NOMBRES COMPLETOS" />
+							<b:dataTableColumn value="#{empleado.persSexo==0? 'Femenino': 'Masculino'}" label="Sexo" />
+							<b:dataTableColumn value="#{empleadoB.getPersFechaNac(empleado.persFechaNac)}"
+								label="Fecha de nacimiento" />
+
+							<b:dataTableColumn
+								value="#{empleado.empEstado?'Activo':'Inactivo'}" label="Estado" />
+							<b:dataTableColumn value="#{empleado.empEsJubilado?'Si':'No'}"
+								label="Jubilado" />
+							<b:dataTableColumn label="Edición">
+								<b:commandButton value="Editar"
+									actionListener="#{empleadoB.leerFila(empleado)}"
+									oncomplete="PF('dialogoEditar').show();"
+									update="iDialogoEditar" icon="pencil"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+
+							</b:dataTableColumn>
+							<b:dataTableColumn label="Ingreso/Salida ">
+								<b:commandButton value="Histórico"
+									actionListener="#{empleadoB.listarHistorico(empleado)}"
+									oncomplete="PF('dialogoHistorico').show();"
+									update="iDialogoHistorico" icon="pencil"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+							</b:dataTableColumn>
+						</b:dataTable>
+						<div align="center">
+							<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+
+							<p:commandButton value="NUEVO EMPLEADO"
+								styleClass="btn btn-outline-info btn-sm"
+								onclick="PF('dialogoCrear').show();" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<!-- ************************************TABLA JUBILADOS******************************************* -->
+		<h:form id="formListarJ">
+
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">JUBILADOS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="tableJ" value="#{empleadoB.listaJubilado}"
+							var="jubilado" responsive="true" striped="false" page-length="5"
+							page-length-menu="5,10,20" copy="true">
+							<b:dataTableColumn value="#{jubilado.persId.persCedula}"
+								label="Cédula" />
+							<b:dataTableColumn value="#{jubilado.persId.persNombres}"
+								label="APELLIDOS Y NOMBRES COMPLETOS" />
+							<b:dataTableColumn value="#{jubilado.persId.persSexo==0? 'Femenino': 'Masculino'}"
+								label="Sexo" />
+							<b:dataTableColumn value="#{empleadoB.getPersFechaNac(jubilado.persId.persFechaNac)}"
+								label="Fecha de nacimiento" />
+							<b:dataTableColumn value="#{empleadoB.getPersFechaNac(jubilado.jubiFechaBaja)}"
+								label="Fecha de alta como jubilado patronal" />
+							<b:dataTableColumn value="#{jubilado.jubiPension}"
+								label="Pensión Mensual" />
+							<b:dataTableColumn value="#{jubilado.jubiPagoDuranteAnio}"
+								label="Valor Pagado Año #{empleadoB.estudioSesion.estuAnio}" />
+
+							<b:dataTableColumn label="Opciones">
+								<b:commandButton value="Editar"
+									actionListener="#{empleadoB.leerFilaJ(jubilado)}"
+									oncomplete="PF('dialogoEditarJ').show();"
+									update="iDialogoEditarJ" icon="pencil"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+							</b:dataTableColumn>
+						</b:dataTable>
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<!-- ************************************DIAGOLO CREAR EMPLEADOS******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear" height="585"
+			header="Crear Empleado" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<b:form>
+
+				<p:wizard id="wizData" widgetVar="wizDataFlow"
+					flowListener="#{empleadoB.onFlowProcess}" nextLabel="Siguiente"
+					backLabel="Atrás">
+					<p:tab id="datosEmpl" title="Datos del Empleado">
+						<p:panelGrid id="pgCrear" columns="2">
+							<h:outputLabel for="txtCedula" value="Cédula *" />
+							<p:inputText id="txtCedula" required="true"
+								value="#{empleadoB.empleado.persCedula}"
+								onclick="this.setSelectionRange(0, this.value.length)">
+
+								<p:ajax event="keyup"
+									listener="#{empleadoB.verificarCedulaDuplicada}"
+									update=":formListar:growlEliminar" />
+							</p:inputText>
+							<h:outputLabel for="txtNombres"
+								value="APELLIDOS Y NOMBRES COMPLETOS *" />
+							<b:inputText id="txtNombres" required="true"
+								style="text-transform: uppercase;"
+								value="#{empleadoB.empleado.persNombres}"
+								onclick="this.setSelectionRange(0, this.value.length)" />
+
+							<h:outputLabel for="txtGenero" value="Sexo *" />
+							<p:selectOneRadio id="txtGenero"
+								value="#{empleadoB.empleado.persSexo}" required="true">
+								<f:selectItem itemLabel="Masculino" itemValue="1" />
+								<f:selectItem itemLabel="Femenino" itemValue="0" />
+							</p:selectOneRadio>
+							<p:outputLabel for="txtFechaNac" value="Fecha de Nacimiento" />
+							<p:calendar id="txtFechaNac" navigator="true" pattern="dd-MM-yyyy" mask="true" 
+								 showOn="button" mode="popup"
+								required="true" value="#{empleadoB.empleado.persFechaNac}" />
+							<!-- 
+							<h:outputLabel for="txtJubilado" value="Jubilado" />
+							<b:switch id="txtJubilado"
+								value="#{empleadoB.empleado.empEsJubilado}" /> -->
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab id="datosExtras" title="Datos Extras">
+						<p:panelGrid id="pgCrearDE" columns="2">
+							<h:outputLabel for="txtSueldo"
+								value="Sueldo mensual a Diciembre del año #{empleadoB.estudioSesion.estuAnio}*" />
+							<b:inputText id="txtSueldo" required="true" mask="decimal"
+								render-label="true"
+								value="#{empleadoB.historicoSal.hisaSueldoMensual}" />
+							<h:outputLabel for="txtComision"
+								value="Valor Total Anual por Comisiones del año #{empleadoB.estudioSesion.estuAnio} (si aplica) " />
+							<b:inputText id="txtComision" mask="decimal" render-label="true"
+								value="#{empleadoB.historicoSal.hisaTotalComision}" />
+							<h:outputLabel for="txtHorasExt"
+								value="Valor Total Anual por Horas Extras del año #{empleadoB.estudioSesion.estuAnio} (si aplica)" />
+							<b:inputText id="txtHorasExt" mask="decimal" render-label="true"
+								value="#{empleadoB.historicoSal.hisaTotalHorasExtra}" />
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab id="datosConfirmacion" title="Confirmación">
+						<h:panelGrid id="confirmacion" columns="2"
+							columnClasses="grid,grid">
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel value="Cédula: " />
+								<p:outputLabel value="#{empleadoB.empleado.persCedula}" />
+								<p:outputLabel value="APELLIDOS Y NOMBRES COMPLETOS: " />
+								<p:outputLabel value="#{empleadoB.empleado.persNombres}" />
+
+
+								<p:outputLabel value="Sexo: " />
+								<p:outputLabel value="#{empleadoB.empleado.persSexo==0? 'Femenino': 'Masculino'}" />
+								<p:outputLabel value="Fecha de Nacimiento: " />
+								<p:outputLabel value="#{empleadoB.getPersFechaNac(empleadoB.empleado.persFechaNac)}" />
+								<p:outputLabel
+									value="Sueldo mensual a Diciembre del año #{empleadoB.estudioSesion.estuAnio}: " />
+								<p:outputLabel
+									value="#{empleadoB.historicoSal.hisaSueldoMensual}" />
+								<p:outputLabel
+									value="Total de comisiones percibidas del año #{empleadoB.estudioSesion.estuAnio}: " />
+								<p:outputLabel
+									value="#{empleadoB.historicoSal.hisaTotalComision}" />
+								<p:outputLabel
+									value="Total de horas extras percibidas del año #{empleadoB.estudioSesion.estuAnio}: " />
+								<p:outputLabel
+									value="#{empleadoB.historicoSal.hisaTotalHorasExtra}" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<div align="right">
+							<p:commandButton value="Guardar"
+								actionListener="#{empleadoB.crear}"
+								update="iDialogoCrear :formListar:table :formListar:growlEliminar :formListarJ:tableJ"
+								oncomplete="PF('dialogoCrear').hide();PF('wizDataFlow').loadStep('datosEmpl', true)"
+								process="@this" styleClass="btn btn-outline-info btn-sm" />
+						</div>
+					</p:tab>
+				</p:wizard>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+			</b:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO EDITAR EMPLEADOS******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			styleClass="modalResponsivo" header="Editar Registro"
+			responsive="true" draggable="false" resizable="false"
+			closeOnEscape="true" appendTo="@(body)" height="585" modal="true"
+			position="top">
+			<h:form>
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel for="txtCedula" value="Cédula *" />
+					<b:inputText id="txtCedula" required="true"
+						value="#{empleadoB.empleadoSelect.persCedula}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtNombres"
+						value="APELLIDOS Y NOMBRES COMPLETOS *" />
+					<b:inputText id="txtNombres" required="true"
+						style="text-transform: uppercase;"
+						value="#{empleadoB.empleadoSelect.persNombres}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+
+					<p:outputLabel for="txtGenero" value="Sexo" />
+					<p:selectOneRadio id="txtGenero"
+						value="#{empleadoB.empleadoSelect.persSexo}" required="true">
+						<f:selectItem itemLabel="Masculino" itemValue="1" />
+						<f:selectItem itemLabel="Femenino" itemValue="0" />
+					</p:selectOneRadio>
+					<p:outputLabel for="fechaNac" value="Fecha de Nacimiento" />
+					<p:calendar id="fechaNac" navigator="true" pattern="dd-MM-yyyy" mask="true"
+						 showOn="button" mode="popup" required="true"
+						value="#{empleadoB.empleadoSelect.persFechaNac}" />
+
+					<p:outputLabel value="Jubilado" />
+					<b:switch id="txtJubilado"
+						value="#{empleadoB.empleadoSelect.empEsJubilado}" />
+
+					<h:outputLabel for="txtSueldo"
+						value="Sueldo mensual a Diciembre del año #{empleadoB.estudioSesion.estuAnio} *" />
+					<b:inputText id="txtSueldo" required="true" mask="decimal"
+						render-label="true"
+						value="#{empleadoB.historicoSalSelect.hisaSueldoMensual}" />
+					<h:outputLabel for="txtComision"
+						value="Valor Total Anual por Comisiones del año #{empleadoB.estudioSesion.estuAnio} (si aplica)" />
+					<b:inputText id="txtComision" mask="decimal" render-label="true"
+						value="#{empleadoB.historicoSalSelect.hisaTotalComision}" />
+					<h:outputLabel for="txtHorasExt"
+						value="Valor Total Anual por Horas Extras  #{empleadoB.estudioSesion.estuAnio} (si aplica)" />
+					<b:inputText id="txtHorasExt" mask="decimal" render-label="true"
+						value="#{empleadoB.historicoSalSelect.hisaTotalHorasExtra}" />
+					<p:commandButton value="Guardar cambios"
+						styleClass="btn btn-outline-info btn-sm"
+						actionListener="#{empleadoB.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar :formListarJ:tableJ"
+						oncomplete="PF('dialogoEditar').hide();" />
+
+				</p:panelGrid>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO EDITAR JUBILADOS******************************************* -->
+		<p:dialog id="iDialogoEditarJ" widgetVar="dialogoEditarJ"
+			header="Editar Registro" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel
+						value="Empleado: #{empleadoB.jubiladoSelect.persId.persNombres}"
+						style="font-weight: bold; color:black" />
+					<p:column />
+					<p:outputLabel for="fechaSalida"
+						value="Fecha de alta como jubilado patronal" />
+					<p:calendar id="fechaSalida" navigator="true" pattern="dd-MM-yyyy" mask="true"
+						showOn="button" mode="popup" required="true" 
+						value="#{empleadoB.jubiladoSelect.jubiFechaBaja}" />
+					<h:outputLabel for="txtPension"
+						value="Pensión Mensual de Jubilación Patronal *" />
+					<b:inputText id="txtPension"
+						value="#{empleadoB.jubiladoSelect.jubiPension}" mask="decimal"
+						render-label="true" required="true" />
+
+					<h:outputLabel for="txtValor"
+						value="Valor pagado durante el año #{empleadoB.estudioSesion.estuAnio} *" />
+					<b:inputText id="txtValor"
+						value="#{empleadoB.jubiladoSelect.jubiPagoDuranteAnio}"
+						mask="decimal" render-label="true" required="true" />
+					<p:column></p:column>
+					<p:commandButton value="Guardar cambios"
+						styleClass="btn btn-outline-info btn-sm"
+						actionListener="#{empleadoB.actualizarJubilado}"
+						update="iDialogoEditarJ :formListarJ:tableJ :formListarJ:growlEliminar"
+						oncomplete="PF('dialogoEditarJ').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR HISTÓRICO******************************************* -->
+		<p:dialog id="iDialogoHistorico" widgetVar="dialogoHistorico"
+			styleClass="modalResponsivo"
+			header="Histórico de Ingresos y Salidas de la Empresa"
+			responsive="true" draggable="false" resizable="false"
+			closeOnEscape="true" height="585" appendTo="@(body)" modal="true"
+			position="top">
+			<h:form id="formHistorico">
+				<p:growl id="growlEliminar" />
+				<p:panelGrid id="pgCrear" columns="2">
+					<h:outputLabel
+						value="Empleado: #{empleadoB.empleadoSelect.persNombres}"
+						style="font-weight: bold; color:black" />
+					<p:column></p:column>
+					<p:outputLabel for="txtFechaIng" value="Fecha de Ingreso" />
+					<p:calendar id="txtFechaIng" navigator="true"
+						required="true" showOn="button" mode="popup" pattern="dd-MM-yyyy" mask="true"
+						value="#{empleadoB.historicoEmpl.hiemFechaIngreso}"
+						yearRange="c-20:c" />
+					<p:outputLabel for="txtFechaSal" value="Fecha de Salida" />
+					<p:calendar id="txtFechaSal" navigator="true" pattern="dd-MM-yyyy" mask="true"
+						required="false" showOn="button" mode="popup" 
+						value="#{empleadoB.historicoEmpl.hiemFechaSalida}"
+						yearRange="c-20:c" />
+					<p:commandButton value="Insertar Histórico"
+						styleClass="btn btn-outline-info btn-sm"
+						actionListener="#{empleadoB.crearHistorico}"
+						update="@form :tablaHistorico:table :tablaHistorico:growlEliminar :formListar:table" />
+				</p:panelGrid>
+			</h:form>
+			<h:form id="tablaHistorico">
+				<p:growl id="growlEliminar" />
+				<b:dataTable id="table" value="#{empleadoB.listaHistorico}"
+					var="historico" responsive="true" striped="false" page-length="5"
+					page-length-menu="5,10,15">
+					<b:dataTableColumn label="Fecha de Ingreso"
+						value="#{empleadoB.getPersFechaNac(historico.hiemFechaIngreso)}" />
+					<b:dataTableColumn label="Fecha de Salida"
+						value="#{empleadoB.getPersFechaNac(historico.hiemFechaSalida)}" />
+					<b:dataTableColumn label="Aplica Deshaucio"
+						value="#{historico.hiemAplicaDesh ? 'Si' : 'No'}" />
+					<b:dataTableColumn label="Pago Deshaucio (Si Aplica)"
+						value="#{historico.hiemPagoDesh}" />
+					<b:dataTableColumn label="Opciones">
+						<b:commandButton value="Editar"
+							actionListener="#{empleadoB.leerFilaH(historico)}"
+							oncomplete="PF('dialogoEditarH').show();"
+							update="iDialogoEditarH" icon="pencil"
+							styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+					</b:dataTableColumn>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO EDITAR HISTÓRICO******************************************* -->
+
+		<p:dialog id="iDialogoEditarH" widgetVar="dialogoEditarH"
+			header="Editar Registro" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtFechaIng" value="Fecha de Ingreso" />
+					<p:calendar id="txtFechaIng" navigator="true" pattern="dd-MM-yyyy" mask="true"
+						required="true" showOn="button" mode="popup" 
+						value="#{empleadoB.historicoEmplSelect.hiemFechaIngreso}"
+						yearRange="c-20:c" />
+					<p:outputLabel for="txtFechaSal" value="Fecha de Salida" />
+					<p:calendar id="txtFechaSal" navigator="true" pattern="dd-MM-yyyy" mask="true"
+						required="false" showOn="button" mode="popup" 
+						value="#{empleadoB.historicoEmplSelect.hiemFechaSalida}"
+						yearRange="c-20:c" />
+					<p:column>
+						<h3>
+							<b>NOTA:</b> Sólo en el caso de aplicar<br /> deshaucio debe
+							llenar el campo.
+						</h3>
+					</p:column>
+					<p:column></p:column>
+					<h:outputLabel for="txtDeshaucio" value="Pago Deshaucio" />
+					<b:inputText id="txtDeshaucio"
+						value="#{empleadoB.historicoEmplSelect.hiemPagoDesh}"
+						onclick="this.setSelectionRange(0, this.value.length)"
+						mask="decimal" />
+					<p:commandButton value="Guardar cambios" dismiss="modal"
+						styleClass="btn btn-outline-info btn-sm"
+						actionListener="#{empleadoB.actualizarHistorico}"
+						update="@form :tablaHistorico:table :tablaHistorico:growlEliminar :formListar:table"
+						oncomplete="PF('dialogoEditarH').hide()" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

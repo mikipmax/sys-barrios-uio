@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">IESS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{iessB.listaIess}" var="iess"
+							responsive="true" striped="false" copy="true">
+							<b:dataTableColumn value="#{iess.codigo}" />
+							<b:dataTableColumn value="#{iess.coefiess}" />
+							<b:dataTableColumn value="#{iess.coefjub}" />
+
+						</b:dataTable>
+
+					</div>
+				</div>
+			</div>
+
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>

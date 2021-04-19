@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+
+	<persistence-unit name="pujpa" transaction-type="RESOURCE_LOCAL">
+
+	
+
+	    <properties>
+	        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+	        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+	     
+	           <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://ec2-52-22-135-159.compute-1.amazonaws.com:5432/d38a52vbb9c139?sslmode=require"/>
+	        <property name="javax.persistence.jdbc.user" value="gdusfigkaaasfn"/>
+	        <property name="javax.persistence.jdbc.password" value="b7e95ce63738132398bc30947c15ed02607ecc0d10b42077444e5d134d7b3c7f"/>
+	    </properties>
+	</persistence-unit>
+</persistence>

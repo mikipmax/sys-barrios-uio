@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:event type="preRenderView"
+		listener="#{managedSesionValida.verificarSesionEstudiante}" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+
+	<h:outputStylesheet name="css/style-uio.css" />
+
+	<style type="text/css">
+.ui-stack {
+	z-index: 1000;
+}
+</style>
+</h:head>
+
+<h:body>
+	<p:graphicImage name="css/banner.jpg" id="image" width="100%"
+		height="15%" />
+	<div class="w3-sidebar w3-bar-block w3-collapse " style="width: 200px;"
+		id="mySidebar">
+		<button class="w3-bar-item w3-button w3-hide-large"
+			style="background: white" onclick="w3_close()">> Cerrar X</button>
+
+		<h:form>
+
+
+			<p:panelMenu style="width:190px">
+				<p:submenu label="Eventos">
+					<p:menuitem value="Administrar Eventos"
+						outcome="estudiante-evento.xhtml" />
+				</p:submenu>
+
+
+				<p:submenu label="Actividades">
+					<p:menuitem value="Administrar Actividades"
+						outcome="estudiante-catalogo-act.xhtml" />
+
+				</p:submenu>
+
+
+
+				<p:submenu label="Proyectos">
+					<p:menuitem value="Administrar Proyectos"
+						outcome="estudiante-proyecto.xhtml" />
+
+				</p:submenu>
+				<p:submenu label="Cerrar Sesión">
+					<p:menuitem value="Salir"
+						actionListener="#{managedSesionValida.cerrarSesion}" />
+
+				</p:submenu>
+
+			</p:panelMenu>
+
+
+
+
+			<p:stack icon="/resources/css/stack.png" expanded="true">
+
+				<p:menuitem value="Salir" icon="/resources/css/logout.png"
+					actionListener="#{managedSesionValida.cerrarSesion}" />
+
+			</p:stack>
+
+		</h:form>
+
+	</div>
+
+	<div class="w3-main" style="margin-left: 200px; background: white">
+
+
+
+		<p:commandButton value="&#9776;" onclick="w3_open()" />
+		<div class="w3-container">
+
+			<ui:insert name="contenido">
+				<p:outputLabel value="Bienvenidos" />
+			</ui:insert>
+		</div>
+
+	</div>
+
+
+</h:body>
+<script>
+	function w3_open() {
+
+		document.getElementById("mySidebar").style.display = "block";
+
+	}
+
+	function w3_close() {
+		document.getElementById("mySidebar").style.display = "none";
+	}
+</script>
+</html>
+

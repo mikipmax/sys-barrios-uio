@@ -1,0 +1,160 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedProyecto.listaProyecto}"
+				var="proyecto" responsive="true" scroll-horizontally="true" striped="false" >
+				<b:dataTableColumn value="#{proyecto.nombreProyecto}"
+					label="Nombre proyecto" />
+				<b:dataTableColumn value="#{proyecto.objetivo}" label="Objetivo" />
+				<b:dataTableColumn value="#{proyecto.marcoReferencial}"
+					label="Marco Referencial" />
+				<b:dataTableColumn value="#{proyecto.marcoTeorico}"
+					label="Marco Teórico" />
+				<b:dataTableColumn value="#{proyecto.periodo}"
+					label="Período Académico" />
+
+
+
+				<b:dataTableColumn
+					value="#{managedProyecto.buscar(proyecto.idPrograma)}"
+					label="Programa" />
+				<b:dataTableColumn label="Opciones">
+					<p:commandButton value="Editar"
+						actionListener="#{managedProyecto.leerFila(proyecto)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil" />
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+<div align="center">
+
+		<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+		<p:commandButton value="Agregar nueva proyecto"
+			onclick="PF('dialogoCrear').show();" styleClass="botones" />
+
+</div>
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar proyecto" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top"  height="585">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre proyecto" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedProyecto.proyectoSelect.nombreProyecto}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtObjetivo" value="Objetivo" />
+					<p:inputTextarea id="txtObjetivo" required="true"
+						autoResize="false"
+						value="#{managedProyecto.proyectoSelect.objetivo}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtMarcoReferencial" value="Marco Referencial" />
+					<p:inputTextarea id="txtMarcoReferencial" required="true"
+						autoResize="false"
+						onclick="this.setSelectionRange(0, this.value.length)"
+						value="#{managedProyecto.proyectoSelect.marcoReferencial}" />
+					<p:outputLabel for="txtMarcoTeorico" value="Marco Teórico" />
+					<p:inputTextarea id="txtMarcoTeorico" required="true"
+						autoResize="false"
+						value="#{managedProyecto.proyectoSelect.marcoTeorico}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtPeriodo" value="Período Académico" />
+					<p:inputText id="txtPeriodo" required="true"
+						value="#{managedProyecto.proyectoSelect.periodo}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+
+					<h:outputLabel for="programa" value="Seleccion programa" />
+					<p:selectOneMenu id="programa"
+						value="#{managedProyecto.programa.idPrograma}">
+
+						<f:selectItems value="#{managedProyecto.listaPrograma}"
+							var="programa" itemLabel="#{programa.nombrePrograma}"
+							itemValue="#{programa.idPrograma}" />
+
+					</p:selectOneMenu>
+					<p:column></p:column>
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedProyecto.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+									<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+						
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear proyecto" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" height="585"
+			 position="top" >
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre proyecto" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedProyecto.proyecto.nombreProyecto}" />
+
+					<p:outputLabel for="txtObjetivo" value="Objetivo" />
+					<p:inputTextarea id="txtObjetivo"  required="true" autoResize="false"
+						value="#{managedProyecto.proyecto.objetivo}" />
+					<p:outputLabel for="txtMarcoReferencial" value="Marco Referencial" />
+					<p:inputTextarea id="txtMarcoReferencial"  autoResize="false"
+						required="true"
+						value="#{managedProyecto.proyecto.marcoReferencial}" />
+					<p:outputLabel for="txtMarcoTeorico" value="Marco Teórico" />
+					<p:inputTextarea id="txtMarcoTeorico"  required="true" autoResize="false"
+						value="#{managedProyecto.proyecto.marcoTeorico}" />
+					<p:outputLabel for="txtPeriodo" value="Período Académico" />
+
+
+					<p:inputMask id="txtPeriodo"
+						value="#{managedProyecto.proyecto.periodo}" mask="2099 - 2099" />
+					<h:outputLabel for="programa" value="Seleccion programa" />
+					<p:selectOneMenu id="programa"
+						value="#{managedProyecto.programa.idPrograma}">
+
+						<f:selectItems value="#{managedProyecto.listaPrograma}"
+							var="programa" itemLabel="#{programa.nombrePrograma}"
+							itemValue="#{programa.idPrograma}" />
+
+					</p:selectOneMenu>
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedProyecto.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

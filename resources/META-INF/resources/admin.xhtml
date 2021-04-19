@@ -1,0 +1,282 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">ADMINISTRADORES</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{CredencialB.listaAcceso}"
+							var="acceso" responsive="true" striped="false" copy="true">
+							<b:dataTableColumn value="#{acceso.credUsuario}" label="Usuario" />
+
+
+							<b:dataTableColumn
+								value="#{(acceso.credEstado)? 'Habilitado':'Bloqueado'}"
+								label="Estado de usuario" />
+							<b:dataTableColumn label="Editar">
+
+								<p:commandLink actionListener="#{CredencialB.leerFila(acceso)}"
+									oncomplete="PF('dialogoEditar').show();"
+									update="iDialogoEditar" icon="ui-icon-pencil">
+									<i class="pi pi-pencil"></i>
+								</p:commandLink>
+
+							</b:dataTableColumn>
+
+						</b:dataTable>
+						<div align="center">
+							<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+
+							<p:commandButton value="NUEVO ADMINISTRADOR"
+								styleClass="btn btn-outline-info btn-sm"
+								onclick="PF('dialogoCrear').show();" />
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</h:form>
+
+
+		<!-- ************************************LISTAR******************************************* -->
+		<h:form id="formListarContacto">
+			<p:growl id="growlEliminar" />
+			<div class="card ">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">CONTACTOS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{CredencialB.listaContacto}"
+							var="contacto" responsive="true" striped="false" copy="true">
+							<b:dataTableColumn value="#{contacto.emprId.emprRazon}"
+								label="Empresa" />
+							<b:dataTableColumn value="#{contacto.credUsuario}"
+								label="Usuario/Email" />
+							<b:dataTableColumn value="#{contacto.contNombres}"
+								label="Nombres" />
+							<b:dataTableColumn value="#{contacto.contApellidos}"
+								label="Apellidos" />
+
+
+
+							<b:dataTableColumn
+								value="#{(contacto.credEstado)? 'Habilitado':'Bloqueado'}"
+								label="Estado de usuario" />
+							<b:dataTableColumn label="Editar">
+
+								<p:commandLink
+									actionListener="#{CredencialB.leerFila(contacto)}"
+									oncomplete="PF('dialogoEditarContacto').show();"
+									update="iDialogoEditarContacto" icon="ui-icon-pencil">
+									<i class="pi pi-pencil"></i>
+								</p:commandLink>
+
+							</b:dataTableColumn>
+
+						</b:dataTable>
+						<div align="center">
+							<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+
+							<p:commandButton value="NUEVO CONTACTO"
+								onclick="PF('dialogoCrearContacto').show();"
+								styleClass="btn btn-outline-info btn-sm" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+		<!--************************************* MODALES PARA ADMINISTRADORES *******************************-->
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Usuario" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel for="txtNombre" value="Usuario *" />
+					<b:inputText id="txtNombre"  required="true"
+						value="#{CredencialB.accesoSelect.credUsuario}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtPass" value="Clave *" />
+					<b:inputText id="txtPass"  required="true"
+						value="#{CredencialB.accesoSelect.credPass}" />
+
+					<h:outputLabel for="estado" value="Estado del Usuario" />
+					<b:switch id="estado"
+						value="#{CredencialB.accesoSelect.credEstado}" />
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{CredencialB.actualizarAcceso}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear Usuario" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<h:outputLabel for="txtNombre" value="Usuario *" />
+					<b:inputText id="txtNombre"  required="true"
+						value="#{CredencialB.acceso.credUsuario}" />
+					<h:outputLabel for="txtPass" value="Clave *" />
+					<b:inputSecret id="txtPass" required="true"
+						value="#{CredencialB.acceso.credPass}" />
+
+
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{CredencialB.crearAcceso}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+
+		</p:dialog>
+
+		<!--************************************* MODALES PARA CONTACTOS *******************************-->
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditarContacto"
+			widgetVar="dialogoEditarContacto" header="Editar Usuario"
+			responsive="true" draggable="false" resizable="false" height="585"
+			closeOnEscape="true" appendTo="@(body)" modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel for="txtEmail" value="Usuario/Email *" />
+					<b:inputText id="txtEmail"  required="true"
+						value="#{CredencialB.contactoSelect.contEmail}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<h:outputLabel for="txtPass" value="Clave *" />
+					<b:inputText id="txtPass"  required="true"
+						value="#{CredencialB.contactoSelect.credPass}" />
+					<h:outputLabel for="txtNombres" value="Nombres *" />
+					<b:inputText id="txtNombres"  required="true"
+						value="#{CredencialB.contactoSelect.contNombres}" style="text-transform: uppercase;"/>
+					<h:outputLabel for="txtApellidos" value="Apellidos *" />
+					<b:inputText id="txtApellidos"  required="true" style="text-transform: uppercase;"
+						value="#{CredencialB.contactoSelect.contApellidos}" />
+					<h:outputLabel for="txtTelefono" value="Telefono" />
+					<b:inputText id="txtTelefono" 
+						value="#{CredencialB.contactoSelect.contTelefono}" />
+					<h:outputLabel for="txtExt" value="Ext" />
+					<b:inputText id="txtExt" 
+						value="#{CredencialB.contactoSelect.contExt}" />
+					<h:outputLabel for="empresa" value="Seleccione Empresa" />
+					<p:selectOneMenu id="empresa" value="#{CredencialB.empresa.emprId}"
+						required="true">
+						<f:selectItems value="#{CredencialB.listaEmpresa}" var="empresa"
+							itemLabel="#{empresa.emprRazon}" itemValue="#{empresa.emprId}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<h:outputLabel for="estado" value="Estado del Usuario" />
+					<b:switch id="estado"
+						value="#{CredencialB.contactoSelect.credEstado}" />
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{CredencialB.actualizar}"
+						update="iDialogoEditarContacto :formListarContacto:table :formListarContacto:growlEliminar"
+						oncomplete="PF('dialogoEditarContacto').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+
+				</p:panelGrid>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+			</h:form>
+
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+
+		<p:dialog id="iDialogoCrearContacto" widgetVar="dialogoCrearContacto"
+			header="Crear Usuario" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			height="585" modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<h:outputLabel for="txtEmail" value="Usuario/Email *" />
+					<b:inputText id="txtEmail"  required="true"
+						value="#{CredencialB.contacto.contEmail}" />
+					<h:outputLabel for="txtPass" value="Clave *" />
+					<b:inputSecret id="txtPass" required="true"
+						value="#{CredencialB.contacto.credPass}" />
+					<h:outputLabel for="txtNombres" value="Nombres *" />
+					<b:inputText id="txtNombres"  required="true" style="text-transform: uppercase;"
+						value="#{CredencialB.contacto.contNombres}" />
+					<h:outputLabel for="txtApellidos" value="Apellidos *" />
+					<b:inputText id="txtApellidos"  required="true"
+						value="#{CredencialB.contacto.contApellidos}"  style="text-transform: uppercase;"/>
+					<h:outputLabel for="txtTelefono" value="Telefono" />
+					<b:inputText id="txtTelefono" 
+						value="#{CredencialB.contacto.contTelefono}" />
+					<h:outputLabel for="txtExt" value="Ext" />
+					<b:inputText id="txtExt" 
+						value="#{CredencialB.contacto.contExt}" />
+					<h:outputLabel for="empresa" value="Seleccione Empresa" />
+					<p:selectOneMenu id="empresa" value="#{CredencialB.empresa.emprId}"
+						required="true">
+						<f:selectItems value="#{CredencialB.listaEmpresa}" var="empresa"
+							itemLabel="#{empresa.emprRazon}" itemValue="#{empresa.emprId}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{CredencialB.crear}"
+						update="iDialogoCrearContacto :formListarContacto:table :formListarContacto:growlEliminar"
+						oncomplete="PF('dialogoCrearContacto').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+
+				</p:panelGrid>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
+

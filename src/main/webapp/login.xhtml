@@ -1,0 +1,102 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet name="css/style-uio.css" />
+
+	<style type="text/css">
+body {
+	background: linear-gradient(to right, rgba(117, 88, 165, 1) 0%,
+		rgba(37, 184, 213, 1) 99%) !important;
+}
+
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	color: white;
+	text-align: center;
+}
+</style>
+</h:head>
+<h:body>
+	<p:graphicImage name="css/banner.jpg" id="image" width="100%" height="15%"/>
+
+
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+
+
+	<div align="center">
+
+		<h:form id="login">
+			<p:growl id="growlLogin" />
+
+
+			<p:column />
+			<p:panel id="basic" header="Inicio de Sesión"
+				style="margin-bottom:20px; max-width: 390px; ">
+				<p:panelGrid id="idLogin">
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtUsuario" value="Usuario" />
+						</p:column>
+						<p:column>
+							<p:inputText id="txtUsuario" maxlength="25" required="true"
+								value="#{managedAcceso.acceso.usuario}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel for="txtPassword" value="Clave" />
+						</p:column>
+						<p:column>
+							<p:password id="txtPassword" required="true"
+								value="#{managedAcceso.acceso.password}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:button value="Regresar" outcome="publico-barrio.xhtml" />
+
+						</p:column>
+						<p:column>
+
+							<p:commandButton value="Iniciar Sesión"
+								action="#{managedAcceso.login}" update=" :login" />
+
+						</p:column>
+
+
+					</p:row>
+
+
+
+
+
+				</p:panelGrid>
+			</p:panel>
+			<p:column />
+
+		</h:form>
+
+	</div>
+
+
+
+
+	<div class="footer">
+			<p>Copyright ©2020 All rights reserved | Desarrollado por Michael
+				Ponce y Estalin Gunza</p>
+			<p>Vinculación entre Ingeniería Informática y Barrios de Quito</p>
+			</div>
+
+
+</h:body>
+</html>

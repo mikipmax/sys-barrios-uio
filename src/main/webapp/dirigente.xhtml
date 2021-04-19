@@ -1,0 +1,169 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:b="http://bootsfaces.net/ui" template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+		<p:growl id="growlEliminar"/>
+		  <b:dataTable id="table" value="#{managedDirigente.listaDirigente}" var="dirigente" responsive="true" scroll-horizontally="true" striped="false"  >
+		   
+		    <b:dataTableColumn value="#{dirigente.nombre}" label="Nombre"/>
+		    <b:dataTableColumn value="#{dirigente.apellido}" label="Apellido"/>
+		    <b:dataTableColumn value="#{dirigente.telefono}" label="Teléfono"/>
+		    <b:dataTableColumn value="#{dirigente.correo}" label="Correo"/>
+		    <b:dataTableColumn value="#{dirigente.genero}" label="Género"/>
+		
+		    <b:dataTableColumn value="#{managedDirigente.buscar(dirigente.idCargo)}" label="Cargo"/>
+		    <b:dataTableColumn value="#{managedDirigente.buscar(dirigente.idBarrio)}" label="Barrio"/>
+		    
+		    <b:dataTableColumn label="Opciones">
+				<p:commandButton value="Editar"
+					actionListener="#{managedDirigente.leerFila(dirigente)}"
+					oncomplete="PF('dialogoEditar').show();"
+					update="iDialogoEditar" icon="ui-icon-pencil" />
+		    </b:dataTableColumn>
+		  </b:dataTable>
+		</h:form>
+<div align="center">
+
+		<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+		<p:commandButton value="Agregar nuevo dirigente"
+			onclick="PF('dialogoCrear').show();" />
+</div>
+		<!-- ************************************DIAGOLO ELIMINAR******************************************* -->
+		<p:dialog widgetVar="dialogoEliminar" header="Confirmar eliminación"
+			responsive="true" draggable="false" resizable="false"
+			closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid columns="3">
+					<p:outputLabel value="¿Está seguro de eliminar el registro?" />
+					<p:commandButton value="Si"
+						actionListener="#{managedDirigente.eliminar}"
+						update=":formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEliminar').hide();" />
+					<p:commandButton value="No" onclick="PF('dialogoEliminar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar dirigente" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+
+					<p:outputLabel for="txtNombre" value="Nombre" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedDirigente.dirigenteSelect.nombre}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtApellido" value="Apellido" />
+					<p:inputText id="txtApellido" maxlength="50" required="true"
+						value="#{managedDirigente.dirigenteSelect.apellido}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtTelefono" value="Teléfono" />
+					<p:inputText id="txtTelefono" maxlength="50" required="true"
+						value="#{managedDirigente.dirigenteSelect.telefono}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtCorreo" value="Correo" />
+					<p:inputText id="txtCorreo" maxlength="50" required="true"
+						value="#{managedDirigente.dirigenteSelect.correo}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtGenero" value="Genero" />
+					<p:selectOneRadio id="txtGenero"
+						value="#{managedDirigente.dirigenteSelect.genero}"
+						styleClass="custom-control-input" required="true">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+						<f:selectItem itemLabel="Femenino" itemValue="F" />
+					</p:selectOneRadio>
+			
+					<p:outputLabel for="barrio" value="Seleccione Barrio" />
+					<p:selectOneMenu id="barrio"
+						value="#{managedDirigente.barrio.idBarrio}">
+
+						<f:selectItems value="#{managedDirigente.listaBarrio}"
+							var="barrio" itemLabel="#{barrio.nombreBarrio}"
+							itemValue="#{barrio.idBarrio}" />
+
+					</p:selectOneMenu>
+					<p:outputLabel for="cargo" value="Seleccione Cargo" />
+					<p:selectOneMenu id="cargo"
+						value="#{managedDirigente.cargo.idCargo}">
+
+						<f:selectItems value="#{managedDirigente.listaCargo}"
+							var="cargo" itemLabel="#{cargo.nombreCargo}"
+							itemValue="#{cargo.idCargo}" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedDirigente.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear dirigente" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true"  appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+				
+					<p:outputLabel for="txtNombre" value="Nombre" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedDirigente.dirigente.nombre}" />
+					<p:outputLabel for="txtApellido" value="Apellido" />
+					<p:inputText id="txtApellido" maxlength="50" required="true"
+						value="#{managedDirigente.dirigente.apellido}" />
+					<p:outputLabel for="txtTelefono" value="Teléfono" />
+					<p:inputText id="txtTelefono" maxlength="50" required="true"
+						value="#{managedDirigente.dirigente.telefono}" />
+					<p:outputLabel for="txtCorreo" value="Correo" />
+					<p:inputText id="txtCorreo" maxlength="50" required="true"
+						value="#{managedDirigente.dirigente.correo}" />
+					<p:outputLabel for="txtGenero" value="Genero" />
+					<p:selectOneRadio id="txtGenero"
+						value="#{managedDirigente.dirigente.genero}"
+						styleClass="custom-control-input" required="true">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+						<f:selectItem itemLabel="Femenino" itemValue="F" />
+					</p:selectOneRadio>
+					
+					<h:outputLabel for="barrio" value="Selección Barrio" />
+					<p:selectOneMenu id="barrio"
+						value="#{managedDirigente.barrio.idBarrio}">
+
+						<f:selectItems value="#{managedDirigente.listaBarrio}"
+							var="barrio" itemLabel="#{barrio.nombreBarrio}"
+							itemValue="#{barrio.idBarrio}" />
+
+					</p:selectOneMenu>
+					<p:outputLabel for="cargo" value="Seleccione Cargo" />
+					<p:selectOneMenu id="cargo"
+						value="#{managedDirigente.cargo.idCargo}">
+
+						<f:selectItems value="#{managedDirigente.listaCargo}"
+							var="cargo" itemLabel="#{cargo.nombreCargo}"
+							itemValue="#{cargo.idCargo}" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedDirigente.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

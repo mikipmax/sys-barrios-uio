@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedBarrio.listaBarrio}"
+				var="barrio" responsive="true" scroll-horizontally="true" striped="false"  >
+				<b:dataTableColumn value="#{barrio.nombreBarrio}"
+					label="Nombre Barrio" />
+				<b:dataTableColumn value="#{barrio.numHab}"
+					label="Número Habitantes" />
+				<b:dataTableColumn
+					value="#{managedBarrio.formatoFecha(barrio.fechaCreacion)}"
+					label="Fecha de Creación" />
+				<b:dataTableColumn value="#{barrio.esLegal?'si':'no'}"
+					label="Legalizado" />
+
+				<b:dataTableColumn value="#{managedBarrio.buscar(barrio.idParr)}"
+					label="Parroquia" />
+				<b:dataTableColumn label="Opciones">
+					<p:commandButton value="Editar"
+						actionListener="#{managedBarrio.leerFila(barrio)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil" />
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+<div align="center">
+		<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+		<p:commandButton value="Agregar nueva barrio"
+			onclick="PF('dialogoCrear').show();" styleClass="botones" />
+</div>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Barrio" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top" >
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre Barrio" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedBarrio.barrioSelect.nombreBarrio}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtNumHab" value="Número Habitantes" />
+					<p:inputNumber id="txtNumHab" maxlength="6" required="true"
+						value="#{managedBarrio.barrioSelect.numHab}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtFechaCre" value="Fecha de Creación" />
+					<p:calendar id="txtFechaCre" navigator="true" pattern="dd-MM-yyyy"
+						required="true" value="#{managedBarrio.barrioSelect.fechaCreacion}" />
+					<h:outputLabel for="booleano" value="¿Es legal?" />
+					<b:switch id="booleano"
+						value="#{managedBarrio.barrioSelect.esLegal}" />
+					<h:outputLabel for="parroquia" value="Seleccion Parroquia" />
+					<p:selectOneMenu id="parroquia"
+						value="#{managedBarrio.parroquia.idParr}">
+
+						<f:selectItems value="#{managedBarrio.listaParroquia}"
+							var="parroquia" itemLabel="#{parroquia.nombreParr}"
+							itemValue="#{parroquia.idParr}" />
+
+					</p:selectOneMenu>
+					<p:column></p:column>
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedBarrio.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear Barrio" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<p:outputLabel for="txtNombre" value="Nombre Barrio" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedBarrio.barrio.nombreBarrio}" />
+					<p:outputLabel for="txtNumHab" value="Número Habitantes" />
+					<p:inputNumber id="txtNumHab" maxlength="6" required="true"
+						value="#{managedBarrio.barrio.numHab}" />
+					<p:outputLabel for="txtFechaCre" value="Fecha de Creación" />
+					<p:calendar id="txtFechaCre" navigator="true" pattern="dd-MM-yyyy"
+						required="true" value="#{managedBarrio.barrio.fechaCreacion}" />
+					<h:outputLabel for="booleano" value="¿Es legal?" />
+					<b:switch id="booleano" value="#{managedBarrio.barrio.esLegal}" />
+					<h:outputLabel for="parroquia" value="Seleccion Parroquia" />
+					<p:selectOneMenu id="parroquia"
+						value="#{managedBarrio.parroquia.idParr}" rendered="true">
+						<f:selectItem itemLabel="Seleccione Parroquia"
+							noSelectionOption="true" />
+						<f:selectItems value="#{managedBarrio.listaParroquia}"
+							var="parroquia" itemLabel="#{parroquia.nombreParr}"
+							itemValue="#{parroquia.idParr}" />
+
+					</p:selectOneMenu>
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedBarrio.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

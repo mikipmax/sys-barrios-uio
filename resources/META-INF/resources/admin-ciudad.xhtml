@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">CIUDAD</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:dataTable id="table" value="#{ciudadB.listaCiudad}"
+							var="ciudad" responsive="true" striped="false" >
+							<b:dataTableColumn value="#{ciudad.ciudNombre}"
+								label="Nombre Ciudad" />
+							<b:dataTableColumn label="Opciones">
+								<b:commandButton value="Editar"
+									actionListener="#{ciudadB.leerFila(ciudad)}" icon="pencil"
+									oncomplete="PF('dialogoEditar').show();"
+									update="iDialogoEditar"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+							</b:dataTableColumn>
+						</b:dataTable>
+						<div align="center">
+							<p:commandButton value="Nueva Ciudad"
+								styleClass="btn btn-outline-info btn-sm"
+								onclick="PF('dialogoCrear').show();" style="margin-right:20px;" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</h:form>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Ciudad" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel for="txtNombre" value="Nombre Ciudad *" />
+					<b:inputText id="txtNombre"  required="true"
+						value="#{ciudadB.ciudadSelect.ciudNombre}" 
+						onclick="this.setSelectionRange(0, this.value.length)" />
+
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{ciudadB.actualizar}"
+						styleClass="btn btn-outline-info btn-sm"
+						update=":formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear Ciudad" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<h:outputLabel for="txtNombre" value="Nombre Ciudad *" />
+					<b:inputText id="txtNombre"  required="true"
+						value="#{ciudadB.ciudad.ciudNombre}" />
+
+					<p:commandButton value="Guardar" actionListener="#{ciudadB.crear}"
+						update="txtNombre :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

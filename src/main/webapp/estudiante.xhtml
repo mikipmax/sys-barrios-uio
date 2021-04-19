@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:b="http://bootsfaces.net/ui" template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+		<p:growl id="growlEliminar"/>
+		  <b:dataTable id="table" value="#{managedEstudiante.listaEstudiante}" var="estudiante" responsive="true" scroll-horizontally="true" striped="false"  >
+		 
+		    <b:dataTableColumn value="#{estudiante.nombre}" label="Nombre"/>
+		    <b:dataTableColumn value="#{estudiante.apellido}" label="Apellido"/>
+		    <b:dataTableColumn value="#{estudiante.telefono}" label="Teléfono"/>
+		    <b:dataTableColumn value="#{estudiante.correo}" label="Correo"/>
+		    <b:dataTableColumn value="#{estudiante.genero}" label="Género"/>
+		 
+		     <b:dataTableColumn value="#{estudiante.semestre}" label="Semestre actual"/>
+		    <b:dataTableColumn value="#{managedEstudiante.buscar(estudiante.idCarr)}" label="Carrera"/>
+		    
+		    <b:dataTableColumn label="Opciones">
+				<p:commandButton value="Editar"
+					actionListener="#{managedEstudiante.leerFila(estudiante)}"
+					oncomplete="PF('dialogoEditar').show();"
+					update="iDialogoEditar" icon="ui-icon-pencil" />
+		    </b:dataTableColumn>
+		  </b:dataTable>
+		</h:form>
+<div align="center">
+		<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+		<p:commandButton value="Agregar nuevo Estudiante"
+			onclick="PF('dialogoCrear').show();" />
+</div>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Estudiante" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					
+					<p:outputLabel for="txtNombre" value="Nombre" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedEstudiante.estudianteSelect.nombre}" onclick="this.setSelectionRange(0, this.value.length)"  />
+					<p:outputLabel for="txtApellido" value="Apellido" />
+					<p:inputText id="txtApellido" maxlength="50" required="true"
+						value="#{managedEstudiante.estudianteSelect.apellido}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtTelefono" value="Teléfono" />
+					<p:inputText id="txtTelefono" maxlength="50" required="true"
+						value="#{managedEstudiante.estudianteSelect.telefono}" onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtCorreo" value="Correo" />
+					<p:inputText id="txtCorreo" maxlength="50" required="true"
+						value="#{managedEstudiante.estudianteSelect.correo}" onclick="this.setSelectionRange(0, this.value.length)"  />
+					<p:outputLabel for="txtGenero" value="Genero" />
+					<p:selectOneRadio id="txtGenero"
+						value="#{managedEstudiante.estudianteSelect.genero}"
+						styleClass="custom-control-input" required="true">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+						<f:selectItem itemLabel="Femenino" itemValue="F" />
+					</p:selectOneRadio>
+					
+				
+						<p:outputLabel for="txtSemestre" value="Semestre" />
+					<p:spinner id="txtSemestre" required="true" min="1" max="10"
+						value="#{managedEstudiante.estudianteSelect.semestre}" />
+						<p:outputLabel for="carrera" value="Carrera" />
+					<p:selectOneMenu id="carrera"
+						value="#{managedEstudiante.carrera.idCarr}">
+
+						<f:selectItems value="#{managedEstudiante.listaCarrera}"
+							var="carrera" itemLabel="#{carrera.nombreCarr}"
+							itemValue="#{carrera.idCarr}" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedEstudiante.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear estudiante" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)" modal="true" 
+			 position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					
+					<p:outputLabel for="txtNombre" value="Nombre" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedEstudiante.estudiante.nombre}" />
+					<p:outputLabel for="txtApellido" value="Apellido" />
+					<p:inputText id="txtApellido" maxlength="50" required="true"
+						value="#{managedEstudiante.estudiante.apellido}" />
+					<p:outputLabel for="txtTelefono" value="Teléfono" />
+					<p:inputText id="txtTelefono" maxlength="50" required="true"
+						value="#{managedEstudiante.estudiante.telefono}" />
+					<p:outputLabel for="txtCorreo" value="Correo" />
+					<p:inputText id="txtCorreo" maxlength="50" required="true"
+						value="#{managedEstudiante.estudiante.correo}" />
+					<p:outputLabel for="txtGenero" value="Genero" />
+					<p:selectOneRadio id="txtGenero"
+						value="#{managedEstudiante.estudiante.genero}"
+						styleClass="custom-control-input" required="true">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+						<f:selectItem itemLabel="Femenino" itemValue="F" />
+					</p:selectOneRadio>
+					
+						<p:outputLabel for="txtSemestre" value="Semestre" />
+							<p:spinner id="txtSemestre" required="true" min="1" max="10"
+						value="#{managedEstudiante.estudiante.semestre}" />
+					<h:outputLabel for="carrera" value="Selección Carrera" />
+					<p:selectOneMenu id="carrera"
+						value="#{managedEstudiante.carrera.idCarr}">
+
+						<f:selectItems value="#{managedEstudiante.listaCarrera}"
+							var="carrera" itemLabel="#{carrera.nombreCarr}"
+							itemValue="#{carrera.idCarr}" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedEstudiante.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,113 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/WEB-INF/template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<b:dataTable id="table" value="#{managedAcceso.listaAcceso}"
+				var="accesoAux" responsive="true" scroll-horizontally="true"
+				striped="false">
+				<b:dataTableColumn value="#{accesoAux.usuario}" label="Usuario" />
+				
+				<b:dataTableColumn
+					value="#{(accesoAux.rol eq 1)? 'Administrador':'Estudiante'}"
+					label="Tipo de Usuario" />
+				<b:dataTableColumn label="Editar">
+
+					<p:commandLink
+						actionListener="#{managedAcceso.leerFila(accesoAux)}"
+						oncomplete="PF('dialogoEditar').show();" update="iDialogoEditar"
+						icon="ui-icon-pencil" >
+						<i class="pi pi-pencil"></i></p:commandLink>
+
+				</b:dataTableColumn>
+				<b:dataTableColumn label="Eliminar">
+
+					<p:commandLink 
+						actionListener="#{managedAcceso.eliminar(accesoAux)}"
+						update=":formListar :formListar:growlEliminar"
+						icon="ui-icon-trash" ><i class="pi pi-trash"></i></p:commandLink>
+
+				</b:dataTableColumn>
+			</b:dataTable>
+		</h:form>
+		<div align="center">
+			<!-- ************************************AGREGAR FORMULARIO******************************************* -->
+			<p:commandButton value="Agregar nuevo usuario"
+				onclick="PF('dialogoCrear').show();" />
+		</div>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar usuario" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<p:outputLabel for="txtNombre" value="Usuario" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedAcceso.accesoSelect.usuario}"
+						onclick="this.setSelectionRange(0, this.value.length)" />
+					<p:outputLabel for="txtPass" value="Clave" />
+					<p:inputText id="txtPass" maxlength="50" required="true"
+						value="#{managedAcceso.accesoSelect.password}" />
+					<h:outputLabel for="tp" value="Seleccion Tipo Usuario" />
+					<p:selectOneMenu id="tp" value="#{managedAcceso.accesoAux.rol}">
+
+						<f:selectItems value="#{managedAcceso.listaRol}" var="acceso"
+							itemLabel="#{acceso.rol eq 1?'Administrador':'Estudiante'}"
+							itemValue="#{acceso.rol}" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{managedAcceso.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- ************************************DIAGOLO CREAR******************************************** -->
+		<p:dialog id="iDialogoCrear" widgetVar="dialogoCrear"
+			header="Crear Usuario" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgCrear" columns="2">
+					<p:outputLabel for="txtNombre" value="Usuario" />
+					<p:inputText id="txtNombre" maxlength="50" required="true"
+						value="#{managedAcceso.accesoAux.usuario}" />
+					<p:outputLabel for="txtPass" value="Clave" />
+					<p:password id="txtPass"  required="true"
+						value="#{managedAcceso.accesoAux.password}" />
+					<h:outputLabel for="tp" value="Seleccion Tipo Usuario" />
+					<p:selectOneMenu id="tp" value="#{managedAcceso.accesoAux.rol}">
+
+						<f:selectItems value="#{managedAcceso.listaRol}" var="acceso"
+							itemLabel="#{acceso.rol eq 1?'Administrador':'Estudiante'}"
+							itemValue="#{acceso.rol}" />
+
+					</p:selectOneMenu>
+
+					<p:column></p:column>
+					<p:commandButton value="Guardar"
+						actionListener="#{managedAcceso.crear}"
+						update="iDialogoCrear :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoCrear').hide();" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

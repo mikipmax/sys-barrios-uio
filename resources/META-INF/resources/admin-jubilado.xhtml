@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	template="/templates/admin-template.xhtml">
+	<ui:define name="contenido">
+
+
+
+
+
+		<!-- ************************************LISTAR******************************************* -->
+
+		<h:form id="formListar">
+			<p:growl id="growlEliminar" />
+			<div class="card">
+				<div class="card-header card-header-info">
+					<h3 class="card-title ">JUBILADOS</h3>
+
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<b:selectOneMenu id="selectEmpresa" col-md="2"
+							value="#{jubiladoB.empresa.emprId}" update="table"
+							onchange="wgEmpleado.DataTable().destroy();ajax:jubiladoB.filtrarPorEmpresa();"
+							select2="true">
+							<f:selectItem itemLabel="(Seleccione una empresa)" itemValue="-1" />
+							<f:selectItems value="#{jubiladoB.listaEmpresa}" var="empresa"
+								itemLabel="#{empresa.emprRazon}" itemValue="#{empresa.emprId}">
+
+							</f:selectItems>
+						</b:selectOneMenu>
+						<br />
+
+
+						<b:dataTable value="#{jubiladoB.listaJubiladoFiltrada}"
+							var="jubilado" responsive="true" striped="false" id="table"
+							widgetVar="wgEmpleado" copy="true">
+							<b:dataTableColumn value="#{jubilado.persId.emprId.emprRazon}"
+								label="Empresa" />
+							<b:dataTableColumn value="#{jubilado.persId.persCedula}"
+								label="Cédula" />
+							<b:dataTableColumn value="#{jubilado.persId.persNombres}"
+								label="APELLIDOS Y NOMBRES COMPLETOS" />
+
+
+							<b:dataTableColumn value="#{jubilado.persId.persSexo==0? 'Femenino': 'Masculino'}"
+								label="Sexo" />
+							<b:dataTableColumn value="#{empleadoB.getPersFechaNac(jubilado.persId.persFechaNac)}"
+								label="Fecha Nacimiento" />
+							<b:dataTableColumn value="#{empleadoB.getPersFechaNac(jubilado.jubiFechaBaja)}"
+								label="Fecha de alta como jubilado patronal" />
+							<b:dataTableColumn value="#{jubilado.jubiPension}"
+								label="Pension Mensual" />
+							<b:dataTableColumn value="#{jubilado.jubiPagoDuranteAnio}"
+								label="Valor Pagado en el año de valoración" />
+
+
+							<b:dataTableColumn label="Opciones">
+								<b:commandButton value="Editar"
+									actionListener="#{jubiladoB.leerFila(jubilado)}"
+									oncomplete="PF('dialogoEditar').show();"
+									update="iDialogoEditar" icon="pencil"
+									styleClass="btn btn-outline-info btn-sm" icon-size="2x" />
+							</b:dataTableColumn>
+
+
+						</b:dataTable>
+
+
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+		<!-- ************************************DIAGOLO EDITAR******************************************* -->
+		<p:dialog id="iDialogoEditar" widgetVar="dialogoEditar"
+			header="Editar Registro" responsive="true" draggable="false"
+			resizable="false" closeOnEscape="true" appendTo="@(body)"
+			modal="true" position="top">
+			<h:form>
+
+				<p:panelGrid id="pgEditar" columns="2">
+					<h:outputLabel
+						value="Empleado: #{jubiladoB.jubiladoSelect.persId.persNombres}"
+						style="font-weight: bold; color:black" />
+					<p:column />
+					<p:outputLabel for="fechaSalida"
+						value="Fecha de alta como jubilado patronal" />
+					<p:calendar id="fechaSalida" navigator="true" pattern="dd-MM-yyyy" mask="true"
+						required="true" value="#{jubiladoB.jubiladoSelect.jubiFechaBaja}"
+						showOn="button" mode="popup" />
+					<h:outputLabel for="txtPension"
+						value="Pensión Mensual de Jubilación Patronal" />
+					<b:inputText id="txtPension"
+						value="#{jubiladoB.jubiladoSelect.jubiPension}" mask="decimal"
+						render-label="true" />
+
+
+					
+					<h:outputLabel for="txtValor"
+						value="Valor pagado en el año de valoración" />
+					<b:inputText id="txtValor"
+						value="#{jubiladoB.jubiladoSelect.jubiPagoDuranteAnio}"
+						mask="decimal" render-label="true" />
+					<p:column></p:column>
+					<p:commandButton value="Guardar cambios"
+						actionListener="#{jubiladoB.actualizar}"
+						update="iDialogoEditar :formListar:table :formListar:growlEliminar"
+						oncomplete="PF('dialogoEditar').hide();"
+						styleClass="btn btn-outline-info btn-sm" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+
+
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,132 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+	<f:event type="preRenderView"
+		listener="#{managedSesionValida.verificarSesionAdmin}" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+	<h:outputStylesheet name="css/style-uio.css" />
+
+	<style type="text/css">
+.ui-stack {
+	z-index: 1000;
+}
+
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	color: black;
+	text-align: center;
+}
+</style>
+</h:head>
+
+<h:body>
+
+	<p:graphicImage name="css/banner.jpg" id="image" width="100%"
+		height="15%" />
+	<div class="w3-sidebar w3-bar-block w3-collapse " style="width: 200px;"
+		id="mySidebar">
+		<button class="w3-bar-item w3-button w3-hide-large"
+			style="background: white" onclick="w3_close()">> Cerrar X</button>
+
+		<h:form>
+			<b:panel look="primary" title="Menú Principal" collapsible="false">
+				<b:listLinks>
+
+
+					<b:navCommandLink value="Eventos" outcome="evento.xhtml" icon="cog" />
+
+
+					<b:navCommandLink value="Estudiantes" outcome="estudiante.xhtml"
+						icon="cog" />
+
+
+					<b:navCommandLink value="Dirigentes" outcome="dirigente.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Barrios" outcome="barrio.xhtml" icon="cog" />
+					<b:navCommandLink value="Parroquias" outcome="parroquia.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Docentes" outcome="docente.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Carreras" outcome="carrera.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Actividades" outcome="catalogo-act.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Programa" outcome="programa.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Proyectos" outcome="proyecto.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Revistas" outcome="revista.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Diagnóstico" outcome="diagnostico.xhtml"
+						icon="cog" />
+						<b:navCommandLink value="Usuarios" outcome="acceso.xhtml"
+						icon="cog" />
+					<b:navCommandLink value="Cerrar Sesión"
+						actionListener="#{managedSesionValida.cerrarSesion}" icon="cog" />
+			<b:navLink header="" active="true"/>
+					
+						<!-- Se aniaden para que permita hacer scroll en pantallas muy pequenias -->
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+							<b:navLink header=""/>
+					
+						
+				
+				</b:listLinks>
+			</b:panel>
+
+
+			<p:stack icon="/resources/css/stack.png" expanded="true">
+				<p:menuitem value="Salir" icon="/resources/css/logout.png"
+					actionListener="#{managedSesionValida.cerrarSesion}" />
+
+			</p:stack>
+		</h:form>
+	</div>
+
+	<div class="w3-main" style="margin-left: 200px; background: white">
+
+
+
+		<p:commandLink onclick="w3_open()">
+			<i class="pi pi-list" />
+		</p:commandLink>
+		<div class="w3-container">
+			<ui:insert name="contenido">
+				<p:outputLabel value="Bienvenidos" />
+			</ui:insert>
+		</div>
+
+	</div>
+
+
+
+</h:body>
+<script>
+	function w3_open() {
+
+		document.getElementById("mySidebar").style.display = "block";
+
+	}
+
+	function w3_close() {
+		document.getElementById("mySidebar").style.display = "none";
+	}
+</script>
+</html>
